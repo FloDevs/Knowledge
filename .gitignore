@@ -1,0 +1,43 @@
+# Dépendances Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Fichiers environnementaux
+.env
+.env.local
+.env.*.local
+
+# Logs
+logs/
+*.log
+npm-debug.log
+yarn-debug.log
+pnpm-debug.log
+lerna-debug.log
+.log
+
+# Build output
+dist/
+build/
+.tmp/
+.out/
+coverage/
+.cache/
+.next/
+.vercel/
+.serverless/
+.vscode/
+.idea/
+
+# Systèmes d’exploitation
+.DS_Store
+Thumbs.db
+
+# Dépendances PM2 (si utilisé)
+pm2_logs/
+
+# Dépendances TypeScript (si utilisé)
+*.tsbuildinfo

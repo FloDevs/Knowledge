@@ -1,0 +1,22 @@
+
+<!DOCTYPE html>
+<html>
+<head><title>Liste des cursus</title></head>
+<body>
+  <h1>Cursus disponibles</h1>
+  <div id="cursus-list">Chargement...</div>
+  <script>
+    fetch('/api/cursus')
+      .then(res => res.json())
+      .then(data => {
+        const container = document.getElementById('cursus-list');
+        container.innerHTML = '';
+        data.forEach(cursus => {
+          const item = document.createElement('div');
+          item.innerHTML = `<h3>${cursus.title}</h3><p>${cursus.description}</p><p>Prix: ${cursus.price}€</p>`;
+          container.appendChild(item);
+        });
+      });
+  </script>
+</body>
+</html>
