@@ -1,0 +1,22 @@
+
+<!DOCTYPE html>
+<html>
+<head><title>Liste des thèmes</title></head>
+<body>
+  <h1>Thèmes disponibles</h1>
+  <div id="theme-list">Chargement...</div>
+  <script>
+    fetch('/api/themes')
+      .then(res => res.json())
+      .then(data => {
+        const container = document.getElementById('theme-list');
+        container.innerHTML = '';
+        data.forEach(theme => {
+          const item = document.createElement('div');
+          item.innerHTML = `<p>${theme.name}</p>`;
+          container.appendChild(item);
+        });
+      });
+  </script>
+</body>
+</html>
