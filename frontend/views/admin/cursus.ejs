@@ -1,0 +1,80 @@
+<%- include('../partials/admin-header.ejs', { pageTitle: 'Gérer les Cursus' }) %>
+
+<h1>📚 Gérer les cursus & leçons</h1>
+
+<!-- FORMULAIRE D'AJOUT DE CURSUS -->
+<section>
+  <h2>➕ Ajouter un nouveau cursus</h2>
+  <form method="POST" action="/cursus/create">
+    <%- include('../partials/csrf') %>
+    <input name="title" placeholder="Titre" required>
+    <input name="description" placeholder="Description">
+    <input name="price" type="number" placeholder="Prix" step="0.01">
+    <button type="submit">Créer</button>
+  </form>
+</section>
+
+<hr>
+
+<!-- AFFICHAGE ET MODIFICATION DES CURSUS -->
+<% cursusWithLessons.forEach(cursus => { %>
+  <section>
+    <h2><%= cursus.title %></h2>
+
+    <!-- FORMULAIRE DE MODIF CURSUS -->
+    <form method="POST" action="/cursus/update/<%= cursus._id %>">
+        <%- include('../partials/csrf') %>
+      <input name="title" value="<%= cursus.title %>" required>
+      <input name="description" value="<%= cursus.description %>">
+      <input name="price" type="number" value="<%= cursus.price %>" step="0.01">
+      <button type="submit">Modifier</button>
+    </form>
+
+    <!-- SUPPRESSION CURSUS -->
+    <form method="DELETE" action="/cursus/delete/<%= cursus._id %>" onsubmit="return confirm('Supprimer ce cursus ?')">
+      <%- include('../partials/csrf') %>
+      <button type="submit">🗑 Supprimer le cursus</button>
+    </form>
+
+    <hr>
+
+    <!-- FORMULAIRE D'AJOUT DE LEÇON -->
+    <h4>➕ Ajouter une leçon</h4>
+    <form method="POST" action="/lessons/create">
+      <%- include('../partials/csrf') %>
+      <input name="title" placeholder="Titre" required>
+      <input name="description" placeholder="Description">
+      <textarea name="textContent" placeholder="Contenu texte" rows="4" cols="50"></textarea>
+      <input name="videoUrl" placeholder="URL de la vidéo (facultatif)">
+      <input name="documentUrl" placeholder="URL du PDF (facultatif)">
+      <input name="price" type="number" placeholder="Prix" step="0.01">
+      <input type="hidden" name="cursus" value="<%= cursus._id %>">
+      <button type="submit">Créer</button>
+    </form>
+
+    <hr>
+
+    <!-- LISTE DES LEÇONS DU CURSUS -->
+    <ul>
+      <% cursus.lessons.forEach(lesson => { %>
+        <li>
+          <form method="POST" action="/lessons/update/<%= lesson._id %>">
+            <%- include('../partials/csrf') %>
+            <input name="title" value="<%= lesson.title %>" required>
+            <input name="description" value="<%= lesson.description %>">
+            <textarea name="textContent" rows="3" cols="50"><%= lesson.textContent || '' %></textarea>
+            <input name="videoUrl" value="<%= lesson.videoUrl || '' %>">
+            <input name="documentUrl" value="<%= lesson.documentUrl || '' %>">
+            <input name="price" type="number" value="<%= lesson.price %>" step="0.01">
+            <button type="submit">💾 Modifier</button>
+          </form>
+          <form method="POST" action="/lessons/delete/<%= lesson._id %>" onsubmit="return confirm('Supprimer cette leçon ?')">
+            <button type="submit">🗑 Supprimer</button>
+          </form>
+        </li>
+      <% }) %>
+    </ul>
+  </section>
+<% }) %>
+
+<%- include('../partials/footer.ejs') %>

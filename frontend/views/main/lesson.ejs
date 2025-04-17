@@ -1,0 +1,33 @@
+<%- include('../partials/header.ejs', { pageTitle: lesson.title }) %>
+
+<h2><%= lesson.title %></h2>
+<p><%= lesson.description %></p>
+
+<% if (lesson.videoUrl) { %>
+  <video width="600" controls>
+    <source src="<%= lesson.videoUrl %>" type="video/mp4">
+    Votre navigateur ne supporte pas la vidéo.
+  </video>
+<% } %>
+
+<% if (lesson.documentUrl) { %>
+  <p><a href="<%= lesson.documentUrl %>" target="_blank">📄 Voir le document PDF</a></p>
+<% } %>
+
+<% if (lesson.textContent && lesson.textContent.trim()) { %>
+  <div class="lesson-text">
+    <p><%= lesson.textContent %></p>
+  </div>
+<% } %>
+
+<% if (isCompleted) { %>
+  <p>✅ Leçon déjà complétée.</p>
+<% } else { %>
+  <form action="/progress/complete-lesson" method="POST">
+    <%- include('../partials/csrf') %>
+    <input type="hidden" name="lessonId" value="<%= lesson._id %>">
+    <button type="submit">✅ Marquer comme complétée</button>
+  </form>
+<% } %>
+
+<%- include('../partials/footer.ejs') %>

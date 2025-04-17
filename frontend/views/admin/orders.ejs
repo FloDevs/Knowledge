@@ -1,0 +1,21 @@
+<%- include('../partials/admin-header.ejs', { pageTitle: 'Gérer les Commandes' }) %>
+<h1>💳 Commandes / Achats</h1>
+
+<ul>
+  <% orders.forEach(order => { %>
+    <li style="margin-bottom: 1rem;">
+      🧑 <%= order.user?.email || 'Utilisateur supprimé' %><br>
+      🎓 
+      <% if (order.cursus) { %>
+        Cursus : <%= order.cursus.title %>
+      <% } else if (order.lesson) { %>
+        Leçon : <%= order.lesson.title %>
+      <% } else { %>
+        <em>Type inconnu</em>
+      <% } %><br>
+      📅 <%= new Date(order.createdAt).toLocaleDateString() %>
+    </li>
+  <% }) %>
+</ul>
+
+<%- include('../partials/footer.ejs') %>

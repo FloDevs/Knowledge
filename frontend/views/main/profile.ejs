@@ -1,0 +1,40 @@
+<%- include('../partials/header.ejs', { pageTitle: 'Mon Profil' }) %>
+
+<% if (message) { %>
+  <div class="alert alert-success">
+    <%= message %>
+  </div>
+<% } %>
+
+<h2>Mon Profil</h2>
+<form action="/users/update/<%= user._id %>?_method=PUT" method="POST">
+  <%- include('../partials/csrf') %>
+  <label for="name">Nom :</label>
+  <input type="text" name="name" id="name" value="<%= user.name %>" required>
+
+  <label for="email">Email :</label>
+  <input type="email" name="email" id="email" value="<%= user.email %>" required>
+
+  <!-- Autres infos si besoin -->
+  
+  <button type="submit">Mettre à jour</button>
+</form>
+
+<h3>Changer mon mot de passe</h3>
+<form action="/users/update-password" method="POST">
+  <%- include('../partials/csrf') %>
+
+  <label for="oldPassword">Mot de passe actuel :</label>
+  <input type="password" name="oldPassword" id="oldPassword" required>
+
+  <label for="newPassword">Nouveau mot de passe :</label>
+  <input type="password" name="newPassword" id="newPassword" required>
+
+  <label for="confirmPassword">Confirmer le nouveau mot de passe :</label>
+  <input type="password" name="confirmPassword" id="confirmPassword" required>
+
+  <button type="submit">Mettre à jour le mot de passe</button>
+</form>
+
+
+<%- include('../partials/footer.ejs') %>

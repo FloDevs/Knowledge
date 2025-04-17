@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title><%= pageTitle || 'Knowledge' %></title>
+  <script src="/js/search.js" defer></script>
+</head>
+<body>
+  <header>
+    <h1>Knowledge</h1>
+    <nav>
+      <ul>
+        <li><a href="/">Accueil</a></li>
+        <li><a href="/cursus">Formations</a></li>
+        <% if (user) { %>
+          <li><a href="/cursus/dashboard">Mes Formations</a></li>
+          <li><a href="/auth/logout">Se déconnecter</a></li>
+        <% } else { %>
+          <li><a href="/auth/register">S'inscrire</a></li>
+          <li><a href="/auth/login">Se connecter</a></li>
+        <% } %>
+      </ul>
+    </nav>
+  </header>
+
+  <main>

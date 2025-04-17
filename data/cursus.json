@@ -1,0 +1,39 @@
+[
+    {
+      "title": "Cursus d’initiation à la guitare",
+      "description": "Apprendre les bases de la guitare",
+      "price": 50,
+      "themeName": "Musique"
+    },
+    {
+      "title": "Cursus d’initiation au piano",
+      "description": "Découvrir le piano et les gammes",
+      "price": 50,
+      "themeName": "Musique"
+    },
+    {
+      "title": "Cursus d’initiation au développement web",
+      "description": "Apprendre HTML, CSS et JavaScript",
+      "price": 60,
+      "themeName": "Informatique"
+    },
+    {
+      "title": "Cursus d’initiation au jardinage",
+      "description": "Comprendre les outils et la nature",
+      "price": 30,
+      "themeName": "Jardinage"
+    },
+    {
+      "title": "Cursus d’initiation à la cuisine",
+      "description": "Maîtriser les bases de la cuisson et des saveurs",
+      "price": 44,
+      "themeName": "Cuisine"
+    },
+    {
+      "title": "Cursus d’initiation à l’art du dressage culinaire",
+      "description": "Apprendre à styliser les plats",
+      "price": 48,
+      "themeName": "Cuisine"
+    }
+  ]
+  

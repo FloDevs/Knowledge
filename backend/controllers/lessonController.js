@@ -1,4 +1,11 @@
 const Lesson = require("../models/Lesson");
+const Purchase = require("../models/Purchase");
+const LessonProgress = require("../models/LessonProgress");
+
+
+exports.getAllLessons = async () => {
+  return await Lesson.find().lean();
+};
 
 // CREATE
 exports.createLesson = async (req, res) => {
@@ -18,15 +25,6 @@ exports.createLesson = async (req, res) => {
   }
 };
 
-// GET ALL
-exports.getAllLessons = async (req, res) => {
-  try {
-    const lessons = await Lesson.find({}).populate("cursus");
-    res.json(lessons);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
 
 // GET BY ID
 exports.getLessonById = async (req, res) => {
@@ -62,5 +60,54 @@ exports.deleteLesson = async (req, res) => {
     res.json({ message: "Lesson deleted" });
   } catch (err) {
     res.status(500).json({ error: err.message });
+  }
+};
+
+exports.getLessonViewById = async (req, res) => {
+  try {
+    const userId = req.session.user._id;
+    const { id } = req.params;
+
+    const lesson = await Lesson.findById(id).populate("cursus");
+    if (!lesson) {
+      return res.status(404).render("error", { message: "Leçon introuvable." });
+    }
+
+    const cursusId = lesson.cursus?._id;
+
+    // Vérifie que l'utilisateur a acheté le cursus ou la leçon
+    const hasAccess = await Purchase.findOne({
+      user: userId,
+      $or: [
+        { lesson: id },
+        { cursus: cursusId }
+      ]
+    });
+
+    if (!hasAccess) {
+      return res.status(403).render("error", {
+        message: "Vous n'avez pas accès à cette leçon."
+      });
+    }
+
+    // Progression
+    const progress = await LessonProgress.findOne({
+      user: userId,
+      lesson: id
+    });
+
+    const isCompleted = progress?.isCompleted || false;
+
+    res.render("main/lesson", {
+      lesson,
+      cursus: lesson.cursus,
+      isCompleted
+    });
+  } catch (err) {
+    console.error("Erreur vue leçon :", err);
+    res.status(500).render("error", {
+      message: "Erreur lors du chargement de la leçon.",
+      error: err
+    });
   }
 };

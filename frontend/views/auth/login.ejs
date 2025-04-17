@@ -1,0 +1,17 @@
+<%- include('../partials/header.ejs', { pageTitle: 'Connexion' }) %>
+
+<h2>Se connecter</h2>
+<form action="/auth/login" method="POST">
+  <%- include('../partials/csrf') %>
+  
+  <label for="email">Email :</label>
+  <input type="email" name="email" id="email" required>
+
+  <label for="password">Mot de passe :</label>
+  <input type="password" name="password" id="password" required>
+
+  <button type="submit">Connexion</button>
+</form>
+<p>Pas de compte ? <a href="/auth/register">Inscrivez-vous</a></p>
+
+<%- include('../partials/footer.ejs') %>

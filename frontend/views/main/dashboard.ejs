@@ -1,0 +1,41 @@
+<%- include('../partials/header.ejs', { pageTitle: 'Dashboard' }) %>
+<% if (message) { %>
+  <div class="alert alert-success">
+    <%= message %>
+  </div>
+<% } %>
+
+<h2>Mon Tableau de bord</h2>
+
+<section>
+  <h3>Mes cursus en cours</h3>
+  <ul>
+    <% userCursus.forEach(function(cursus) { %>
+      <li>
+        <a href="/cursus/<%= cursus.id %>"><%= cursus.title %></a>
+        (Progression : <%= cursus.progress %>%)
+      </li>
+    <% }); %>
+  </ul>
+</section>
+
+<section>
+  <h3>Leçons achetées individuellement</h3>
+  <% if (userLessons.length === 0) { %>
+    <p>Vous n'avez pas encore acheté de leçon seule.</p>
+  <% } else { %>
+    <ul>
+      <% userLessons.forEach(function(lesson) { %>
+        <li>
+          <a href="/lessons/<%= lesson.id %>"><%= lesson.title %></a>
+          <% if (lesson.cursusTitle) { %> — du cursus : <%= lesson.cursusTitle %><% } %>
+        </li>
+      <% }); %>
+    </ul>
+  <% } %>
+</section>
+
+<a href="/users/profile">Mon profil</a>
+
+
+<%- include('../partials/footer.ejs') %>

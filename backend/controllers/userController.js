@@ -1,72 +1,31 @@
 const User = require("../models/User");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-
-// REGISTER
-exports.register = async (req, res) => {
-  try {
-    const { name, email, password } = req.body;
-
-    // Vérification si email déjà utilisé
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({ message: "Email already taken" });
-    }
-
-    // Création de l'utilisateur
-    const newUser = await User.create({ name, email, password });
-    res.status(201).json({
-      message: "User created successfully",
-      user: { id: newUser._id, name: newUser.name, email: newUser.email },
-    });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
-
-// LOGIN
-exports.login = async (req, res) => {
-  try {
-    const { email, password } = req.body;
-    const user = await User.findOne({ email });
-    if (!user) return res.status(404).json({ message: "User not found" });
-
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
-
-    // Création du token
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "1d",
-    });
-
-    res.json({
-      message: "Login successful",
-      token,
-      user: { id: user._id, name: user.name, email: user.email },
-    });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
+const Purchase = require("../models/Purchase");
+const bcrypt = require('bcrypt');
+// const Lesson = require("../models/Lesson");
+// const Cursus = require("../models/Cursus");
+const LessonProgress = require("../models/LessonProgress");
 
 // GET ALL USERS (Admin)
-exports.getAllUsers = async (req, res) => {
-  try {
-    const users = await User.find({});
-    res.json(users);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+exports.getAllUsers = async () => {
+  return await User.find().lean();
 };
 
+
 // GET USER BY ID (Admin or same user)
-exports.getUserById = async (req, res) => {
+exports.getMyProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
-    if (!user) return res.status(404).json({ message: "User not found" });
-    res.json(user);
+    const userId = req.session.user._id;
+
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).send("Utilisateur non trouvé.");
+
+    res.render('main/profile', {
+      pageTitle: 'Mon profil',
+      user
+    });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error("Erreur profil :", err);
+    res.status(500).send("Erreur serveur");
   }
 };
 
@@ -74,20 +33,69 @@ exports.getUserById = async (req, res) => {
 exports.updateUser = async (req, res) => {
   try {
     const { name } = req.body;
-    const user = await User.findById(req.params.id);
-    if (!user) return res.status(404).json({ message: "User not found" });
+    const userId = req.params.id;
+    const sessionUser = req.session.user;
+
+    if (sessionUser._id.toString() !== userId && !sessionUser.isAdmin) {
+      return res.status(403).send("Non autorisé");
+    }
+
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).send("Utilisateur non trouvé");
 
     user.name = name || user.name;
     await user.save();
 
-    res.json({
-      message: "User updated",
-      user: { id: user._id, name: user.name, email: user.email },
-    });
+    req.session.message = "Profil mis à jour avec succès";
+    res.redirect("/cursus/dashboard");
+
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error("Erreur updateUser:", err);
+    res.status(500).send("Erreur serveur");
   }
 };
+
+exports.updatePassword = async (req, res) => {
+  try {
+    const { oldPassword, newPassword, confirmPassword } = req.body;
+    const userId = req.session.user._id;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      req.session.message = "Utilisateur non trouvé.";
+      return res.redirect('/users/profile');
+    }
+
+    const isMatch = await bcrypt.compare(oldPassword, user.password);
+    if (!isMatch) {
+      req.session.message = "Mot de passe actuel incorrect.";
+      return res.redirect('/users/profile');
+    }
+
+    if (newPassword !== confirmPassword) {
+      req.session.message = "La confirmation ne correspond pas.";
+      return res.redirect('/users/profile');
+    }
+
+    if (newPassword.length < 6) {
+      req.session.message = "Le mot de passe doit contenir au moins 6 caractères.";
+      return res.redirect('/users/profile');
+    }
+
+    user.password = newPassword;
+    await user.save(); 
+
+    req.session.message = "Mot de passe mis à jour avec succès.";
+    res.redirect('/cursus/dashboard');
+  } catch (err) {
+    console.error("Erreur updatePassword:", err);
+    req.session.message = "Erreur serveur.";
+    res.redirect('/users/profile');
+  }
+};
+
+
+
 
 // DELETE USER
 exports.deleteUser = async (req, res) => {
@@ -96,5 +104,40 @@ exports.deleteUser = async (req, res) => {
     res.json({ message: "User deleted" });
   } catch (err) {
     res.status(500).json({ error: err.message });
+  }
+};
+
+exports.getMyContent = async (req, res) => {
+  try {
+    const userId = req.session.user._id;
+
+    // Récupère tous les achats
+    const purchases = await Purchase.find({ user: userId })
+      .populate("cursus")
+      .populate("lesson");
+
+    // Sépare cursus et leçons
+    const cursusAchetés = purchases
+      .filter(p => p.cursus)
+      .map(p => p.cursus);
+
+    const leçonsAchetées = purchases
+      .filter(p => p.lesson)
+      .map(p => p.lesson);
+
+    // Récupérer la progression des leçons
+    const progressList = await LessonProgress.find({ user: userId });
+
+    res.render("user/my-content", {
+      cursusAchetés,
+      leçonsAchetées,
+      progressList
+    });
+  } catch (err) {
+    console.error("Erreur récupération contenu utilisateur :", err);
+    res.status(500).render("error", {
+      message: "Impossible d'afficher vos contenus",
+      error: err
+    });
   }
 };
