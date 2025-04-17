@@ -5,6 +5,7 @@ const lessonSchema = new mongoose.Schema({
   description: String,
   videoUrl: String,
   documentUrl: String,
+  textContent: String,
   price: { type: Number, required: true },
   cursus: { type: mongoose.Schema.Types.ObjectId, ref: "Cursus", required: true },
 });

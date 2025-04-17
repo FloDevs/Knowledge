@@ -1,0 +1,28 @@
+<%- include('../partials/header.ejs', { pageTitle: 'Nos Cursus' }) %>
+
+<h2>🛍 Tous les cursus</h2>
+
+<input type="text" id="searchCursus" placeholder="Rechercher une formation..." class="search-bar">
+<button id="searchCursusBtn">Rechercher</button>
+
+<ul id="cursusList">
+  <% cursusList.forEach(cursus => {
+    const isAcheté = cursusAchetésIds.includes(cursus._id.toString());
+  %>
+    <li>
+      <%= cursus.title %>
+      <% if (isAcheté) { %>
+        ✅ Acheté
+      <% } else { %>
+        <form action="/purchases/buy/cursus/<%= cursus._id %>" method="GET">
+          <button type="submit">Acheter</button>
+        </form>
+      <% } %>
+      <a href="/cursus/<%= cursus._id %>">Voir les leçons</a>
+    </li>
+  <% }) %>
+</ul>
+
+
+
+<%- include('../partials/footer.ejs') %>

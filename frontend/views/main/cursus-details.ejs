@@ -1,0 +1,25 @@
+<%- include('../partials/header.ejs', { pageTitle: cursus.title }) %>
+
+<h2><%= cursus.title %></h2>
+<p><%= cursus.description %></p>
+
+<ul>
+  <% allLessons.forEach(lesson => { %>
+    <li>
+      <a href="/lessons/<%= lesson._id %>">
+        <%= lesson.title %>
+      </a>
+      <% if (completedLessonIds.includes(lesson._id.toString())) { %>
+        ✅
+      <% } %>
+    </li>
+  <% }) %>
+</ul>
+
+<% if (certif) { %>
+  <hr>
+  <h3>🎉 Félicitations ! Vous avez terminé toutes les leçons.</h3>
+  <a href="/certifications/download/<%= cursus._id %>" class="btn btn-success">📄 Télécharger mon certificat</a>
+<% } %>
+
+<%- include('../partials/footer.ejs') %>

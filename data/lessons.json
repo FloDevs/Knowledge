@@ -1,0 +1,75 @@
+[
+    {
+      "title": "Découverte de l’instrument",
+      "description": "Première approche de la guitare",
+      "price": 26,
+      "cursusTitle": "Cursus d’initiation à la guitare"
+    },
+    {
+      "title": "Les accords et les gammes",
+      "description": "Apprendre les bases musicales",
+      "price": 26,
+      "cursusTitle": "Cursus d’initiation à la guitare"
+    },
+    {
+      "title": "Découverte de l’instrument",
+      "description": "Découverte du piano",
+      "price": 26,
+      "cursusTitle": "Cursus d’initiation au piano"
+    },
+    {
+      "title": "Les accords et les gammes",
+      "description": "Notions fondamentales du piano",
+      "price": 26,
+      "cursusTitle": "Cursus d’initiation au piano"
+    },
+    {
+      "title": "Les langages Html et CSS",
+      "description": "Bases de la création de sites web",
+      "price": 32,
+      "cursusTitle": "Cursus d’initiation au développement web"
+    },
+    {
+      "title": "Dynamiser votre site avec Javascript",
+      "description": "Ajoutez des interactions à vos pages",
+      "price": 32,
+      "cursusTitle": "Cursus d’initiation au développement web"
+    },
+    {
+      "title": "Les outils du jardinier",
+      "description": "Présentation des outils de base",
+      "price": 16,
+      "cursusTitle": "Cursus d’initiation au jardinage"
+    },
+    {
+      "title": "Jardiner avec la lune",
+      "description": "Planifier selon le calendrier lunaire",
+      "price": 16,
+      "cursusTitle": "Cursus d’initiation au jardinage"
+    },
+    {
+      "title": "Les modes de cuisson",
+      "description": "Maîtriser les cuissons des aliments",
+      "price": 23,
+      "cursusTitle": "Cursus d’initiation à la cuisine"
+    },
+    {
+      "title": "Les saveurs",
+      "description": "Comprendre les goûts et leur assemblage",
+      "price": 23,
+      "cursusTitle": "Cursus d’initiation à la cuisine"
+    },
+    {
+      "title": "Mettre en œuvre le style dans l’assiette",
+      "description": "Soigner le visuel des plats",
+      "price": 26,
+      "cursusTitle": "Cursus d’initiation à l’art du dressage culinaire"
+    },
+    {
+      "title": "Harmoniser un repas à quatre plats",
+      "description": "Cohérence entre les mets",
+      "price": 26,
+      "cursusTitle": "Cursus d’initiation à l’art du dressage culinaire"
+    }
+  ]
+  

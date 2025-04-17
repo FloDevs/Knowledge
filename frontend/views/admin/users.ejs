@@ -1,0 +1,38 @@
+<%- include('../partials/admin-header.ejs', { pageTitle: 'Gérer les Utilisateurs' }) %>
+
+<h1>👤 Gérer les utilisateurs</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Nom d'utilisateur</th>
+      <th>Email</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% users.forEach(user => { %>
+      <tr>
+        <td>
+          <form method="POST" action="/users/update/<%= user._id %>">
+            <%- include('../partials/csrf') %>
+            <input type="text" name="username" value="<%= user.username %>" required>
+        </td>
+        <td>
+            <input type="email" name="email" value="<%= user.email %>" required>
+        </td>
+        <td>
+            <button type="submit">Modifier</button>
+          </form>
+
+          <form method="POST" action="/users/delete/<%= user._id %>" onsubmit="return confirm('Supprimer cet utilisateur ?');" style="display:inline;">
+            <%- include('../partials/csrf') %>
+            <button type="submit" style="background-color: red; color: white;">Supprimer</button>
+          </form>
+        </td>
+      </tr>
+    <% }) %>
+  </tbody>
+</table>
+
+<%- include('../partials/footer.ejs') %>
