@@ -31,11 +31,11 @@ exports.createLesson = async (req, res) => {
 
 exports.updateLesson = async (req, res) => {
   try {
-    const { title, description, videoUrl, documentUrl, price } = req.body;
+    const { title, description, videoUrl, documentUrl, price, textContent } = req.body;
 
     const updated = await Lesson.findByIdAndUpdate(
       req.params.id,
-      { title, description, videoUrl, documentUrl, price },
+      { title, description, videoUrl, documentUrl, price, textContent },
       { new: true }
     );
 
