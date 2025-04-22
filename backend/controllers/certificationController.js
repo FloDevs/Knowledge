@@ -51,7 +51,7 @@ exports.downloadCertificate = async (req, res) => {
 
     doc
       .fontSize(20)
-      .text('Certificat de Réussite', { align: 'center' })
+      .text('Certificat Knowledge', { align: 'center' })
       .moveDown(2);
 
     doc
