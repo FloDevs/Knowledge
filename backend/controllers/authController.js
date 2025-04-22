@@ -1,7 +1,7 @@
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { sendConfirmationEmail } = require('../mail/mailer');
+const { sendConfirmationEmail } = require("../mail/mailer");
 
 exports.register = async (req, res) => {
   try {
@@ -9,36 +9,36 @@ exports.register = async (req, res) => {
 
     if (!confirmPassword || password !== confirmPassword) {
       req.session.message = "Les mots de passe ne correspondent pas.";
-      return res.redirect('/auth/register');
+      return res.redirect("/auth/register");
     }
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       req.session.message = "Email déjà utilisé.";
-      return res.redirect('/auth/register');
+      return res.redirect("/auth/register");
     }
 
     const newUser = await User.create({
       name,
       email,
       password,
-      isVerified: false
+      isVerified: false,
     });
 
     await sendConfirmationEmail(email, newUser._id);
 
-    req.session.message = "Inscription réussie. Veuillez confirmer votre email.";
-    res.redirect('/');
+    req.session.message =
+      "Inscription réussie. Veuillez confirmer votre email.";
+    res.redirect("/");
   } catch (err) {
     console.error("Erreur lors de l'inscription :", err);
-    res.status(500).render('error', {
+    res.status(500).render("error", {
       message: "Une erreur est survenue lors de l'inscription.",
       error: err,
-      pageStylesheet: "error"
+      pageStylesheet: "error",
     });
   }
 };
-
 
 exports.login = async (req, res) => {
   try {
@@ -48,12 +48,12 @@ exports.login = async (req, res) => {
 
     if (!user || !(await bcrypt.compare(password, user.password))) {
       req.session.message = "Identifiant ou mot de passe incorrect";
-      return res.redirect('/auth/login');
+      return res.redirect("/auth/login");
     }
 
     if (!user.isVerified) {
       req.session.message = "Veuillez confirmer votre adresse email";
-      return res.redirect('/auth/login');
+      return res.redirect("/auth/login");
     }
 
     req.session.user = {
@@ -64,14 +64,15 @@ exports.login = async (req, res) => {
       isVerified: user.isVerified,
     };
 
-    return res.redirect(user.isAdmin ? '/admin/dashboard' : '/cursus/dashboard');
-
+    return res.redirect(
+      user.isAdmin ? "/admin/dashboard" : "/cursus/dashboard"
+    );
   } catch (err) {
-    console.error('Erreur lors du login :', err);
-    res.status(500).render('error', {
-      message: 'Une erreur est survenue lors de la connexion.',
+    console.error("Erreur lors du login :", err);
+    res.status(500).render("error", {
+      message: "Une erreur est survenue lors de la connexion.",
       error: err,
-      pageStylesheet: "error"
+      pageStylesheet: "error",
     });
   }
 };
@@ -80,16 +81,16 @@ exports.logout = (req, res) => {
   req.session.destroy((err) => {
     if (err) {
       console.error("Erreur lors de la déconnexion :", err);
-      return res.status(500).render('error', {
+      return res.status(500).render("error", {
         message: "Une erreur est survenue lors de la déconnexion.",
         error: err,
-        pageStylesheet: "error"
+        pageStylesheet: "error",
       });
     }
-    res.clearCookie('connect.sid');
+    res.clearCookie("connect.sid");
 
-    req.session = null; 
-    res.redirect('/auth/login');
+    req.session = null;
+    res.redirect("/auth/login");
   });
 };
 
@@ -102,18 +103,18 @@ exports.confirmEmail = async (req, res) => {
 
     await User.findByIdAndUpdate(userId, { isVerified: true });
 
-    res.render('auth/email-confirmed', {
-      message: 'Votre adresse email a été confirmée avec succès. Vous pouvez maintenant vous connecter.',
-      pageStylesheet:"auth/email-confirmed"
+    res.render("auth/email-confirmed", {
+      message:
+        "Votre adresse email a été confirmée avec succès. Vous pouvez maintenant vous connecter.",
+      pageStylesheet: "auth/email-confirmed",
     });
   } catch (err) {
     console.error("Erreur confirmation e-mail :", err);
 
-    res.status(400).render('error', {
-      message: 'Lien invalide ou expiré.',
+    res.status(400).render("error", {
+      message: "Lien invalide ou expiré.",
       error: err,
-      pageStylesheet: "error"
+      pageStylesheet: "error",
     });
   }
 };
-

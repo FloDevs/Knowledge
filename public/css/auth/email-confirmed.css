@@ -1,34 +1,33 @@
 .confirmation-container {
-    max-width: 50rem;
-    margin: 5rem auto;
-    padding: 2rem;
-    text-align: center;
-  }
-  
-  .confirmation-title {
-    font-size: 2rem;
-    margin-bottom: 1rem;
-    color: #28a745;
-  }
-  
-  .confirmation-message {
-    font-size: 1.1rem;
-    color: #333;
-    margin-bottom: 2rem;
-  }
-  
-  .btn-go-login {
-    display: inline-block;
-    background-color: #0073c6;
-    color: white;
-    padding: 0.6rem 1.2rem;
-    font-size: 1rem;
-    border-radius: 0.3rem;
-    text-decoration: none;
-    transition: background-color 0.2s ease-in-out;
-  }
-  
-  .btn-go-login:hover {
-    background-color: #005ea0;
-  }
-  
+  max-width: 50rem;
+  margin: 5rem auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.confirmation-title {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: #82b864;
+}
+
+.confirmation-message {
+  font-size: 1.1rem;
+  color: #333;
+  margin-bottom: 2rem;
+}
+
+.btn-go-login {
+  display: inline-block;
+  background-color: #0074c7;
+  color: #f1f8fc;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  border-radius: 0.3rem;
+  text-decoration: none;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.btn-go-login:hover {
+  background-color: #00497c;
+}

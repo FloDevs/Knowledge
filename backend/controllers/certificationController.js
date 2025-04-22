@@ -1,7 +1,7 @@
-const PDFDocument = require('pdfkit');
-const Certification = require('../models/Certification');
-const User = require('../models/User');
-const Cursus = require('../models/Cursus')
+const PDFDocument = require("pdfkit");
+const Certification = require("../models/Certification");
+const User = require("../models/User");
+const Cursus = require("../models/Cursus");
 
 exports.getAllCertifications = async (req, res) => {
   try {
@@ -14,19 +14,22 @@ exports.getAllCertifications = async (req, res) => {
   }
 };
 
-
 exports.getUserCertificationsView = async (req, res) => {
   try {
     const userId = req.session.user._id;
 
-    const certifications = await Certification.find({ user: userId })
-      .populate("cursus");
+    const certifications = await Certification.find({ user: userId }).populate(
+      "cursus"
+    );
 
-    res.render("main/certification", { certifications, pageStylesheet: "main/certification"});
+    res.render("main/certification", {
+      certifications,
+      pageStylesheet: "main/certification",
+    });
   } catch (err) {
     res.status(500).render("error", {
       message: "Erreur lors du chargement des certificats",
-      error: err
+      error: err,
     });
   }
 };
@@ -36,47 +39,56 @@ exports.downloadCertificate = async (req, res) => {
     const userId = req.session?.user?._id;
     const { cursusId } = req.params;
 
-    const certif = await Certification.findOne({ user: userId, cursus: cursusId }).populate('cursus');
+    const certif = await Certification.findOne({
+      user: userId,
+      cursus: cursusId,
+    }).populate("cursus");
     if (!certif) {
-      return res.status(403).send('Aucune certification trouvée.');
+      return res.status(403).send("Aucune certification trouvée.");
     }
 
     const user = await User.findById(userId);
 
     const doc = new PDFDocument();
 
-    res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', `attachment; filename=certificat-${user.name}.pdf`);
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename=certificat-${user.name}.pdf`
+    );
     doc.pipe(res);
 
     doc
       .fontSize(20)
-      .text('Certificat Knowledge', { align: 'center' })
+      .text("Certificat Knowledge", { align: "center" })
       .moveDown(2);
 
     doc
       .fontSize(14)
-      .text(`Ce document certifie que`, { align: 'center' })
+      .text(`Ce document certifie que`, { align: "center" })
       .moveDown();
 
     doc
       .fontSize(18)
-      .text(`${user.name}`, { align: 'center', underline: true })
+      .text(`${user.name}`, { align: "center", underline: true })
       .moveDown();
 
     doc
       .fontSize(14)
-      .text(`a complété avec succès le cursus suivant :`, { align: 'center' })
+      .text(`a complété avec succès le cursus suivant :`, { align: "center" })
       .moveDown();
 
     doc
       .fontSize(16)
-      .text(`${certif.cursus.title}`, { align: 'center', underline: true })
+      .text(`${certif.cursus.title}`, { align: "center", underline: true })
       .moveDown(2);
 
     doc
       .fontSize(12)
-      .text(`Délivré le : ${new Date(certif.issuedAt).toLocaleDateString('fr-FR')}`, { align: 'center' });
+      .text(
+        `Délivré le : ${new Date(certif.issuedAt).toLocaleDateString("fr-FR")}`,
+        { align: "center" }
+      );
 
     doc.end();
   } catch (err) {
@@ -84,4 +96,3 @@ exports.downloadCertificate = async (req, res) => {
     res.status(500).send("Erreur lors de la génération du certificat.");
   }
 };
-

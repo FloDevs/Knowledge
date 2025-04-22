@@ -1,42 +1,41 @@
 .admin-dashboard {
-    max-width: 50rem;
-    margin: 4rem auto;
-    padding: 2rem;
-    text-align: center;
-  }
-  
-  .admin-dashboard h1 {
-    font-size: 2.2rem;
-    margin-bottom: 2.5rem;
-    border-bottom: 2px solid #a30017;
-    display: inline-block;
-    padding-bottom: 0.4rem;
-  }
-  
-  .dashboard-links {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  
-  .dashboard-links li {
-    margin: 1.5rem 0;
-  }
-  
-  .dashboard-links a {
-    display: inline-block;
-    padding: 1rem 2rem;
-    font-size: 1.1rem;
-    text-decoration: none;
-    border: 1px solid #007bff;
-    border-radius: 0.4rem;
-    color: #007bff;
-    background-color: #f0f8ff;
-    transition: all 0.2s ease;
-  }
-  
-  .dashboard-links a:hover {
-    background-color: #007bff;
-    color: white;
-  }
-  
+  max-width: 50rem;
+  margin: 4rem auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.admin-dashboard h1 {
+  font-size: 2.2rem;
+  margin-bottom: 2.5rem;
+  border-bottom: 2px solid #cd2c2e;
+  display: inline-block;
+  padding-bottom: 0.4rem;
+}
+
+.dashboard-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.dashboard-links li {
+  margin: 1.5rem 0;
+}
+
+.dashboard-links a {
+  display: inline-block;
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  text-decoration: none;
+  border: 1px solid #0074c7;
+  border-radius: 0.4rem;
+  color: #0074c7;
+  background-color: #f0f8ff;
+  transition: all 0.2s ease;
+}
+
+.dashboard-links a:hover {
+  background-color: #0074c7;
+  color: #f1f8fc;
+}

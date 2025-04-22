@@ -1,5 +1,3 @@
 const { body } = require("express-validator");
 
-module.exports = [
-  body("*").trim().escape()
-];
+module.exports = [body("*").trim().escape()];

@@ -1,7 +1,5 @@
 const User = require("../models/User");
-const Purchase = require("../models/Purchase");
-const bcrypt = require('bcrypt');
-const LessonProgress = require("../models/LessonProgress");
+const bcrypt = require("bcrypt");
 
 exports.getAllUsers = async () => {
   return await User.find().lean();
@@ -14,10 +12,10 @@ exports.getMyProfile = async (req, res) => {
     const user = await User.findById(userId);
     if (!user) return res.status(404).send("Utilisateur non trouvé.");
 
-    res.render('main/profile', {
-      pageTitle: 'Mon profil',
+    res.render("main/profile", {
+      pageTitle: "Mon profil",
       user,
-      pageStylesheet: "main/profile"
+      pageStylesheet: "main/profile",
     });
   } catch (err) {
     console.error("Erreur profil :", err);
@@ -41,7 +39,7 @@ exports.updateUser = async (req, res) => {
     user.name = name || user.name;
     user.email = email || user.email;
 
-    // Only an admin can be change the type of an user
+    // Seul un admin peut modifier le type d'utilisateur
     if (sessionUser.isAdmin && typeof isAdmin !== "undefined") {
       user.isAdmin = isAdmin === "true";
     }
@@ -49,15 +47,18 @@ exports.updateUser = async (req, res) => {
     await user.save();
 
     req.session.message = "Utilisateur mis à jour avec succès";
-    res.redirect("/admin/users");
 
+    if (sessionUser.isAdmin) {
+      res.redirect("/admin/users");
+    } else {
+      res.redirect("/users/profile");
+    }
   } catch (err) {
     console.error("Erreur updateUser:", err);
     req.session.message = "Erreur lors de la mise à jour";
     res.redirect("/admin/users");
   }
 };
-
 
 exports.updatePassword = async (req, res) => {
   try {
@@ -67,34 +68,50 @@ exports.updatePassword = async (req, res) => {
     const user = await User.findById(userId);
     if (!user) {
       req.session.message = "Utilisateur non trouvé.";
-      return res.redirect('/users/profile');
+      return res.redirect("/users/profile");
     }
 
     const isMatch = await bcrypt.compare(oldPassword, user.password);
     if (!isMatch) {
       req.session.message = "Mot de passe actuel incorrect.";
-      return res.redirect('/users/profile');
+      return res.redirect("/users/profile");
     }
 
     if (newPassword !== confirmPassword) {
       req.session.message = "La confirmation ne correspond pas.";
-      return res.redirect('/users/profile');
+      return res.redirect("/users/profile");
     }
 
+    const errors = [];
     if (newPassword.length < 6) {
-      req.session.message = "Le mot de passe doit contenir au moins 6 caractères.";
-      return res.redirect('/users/profile');
+      errors.push("Le mot de passe doit contenir au moins 6 caractères.");
+    }
+    if (!/[A-Z]/.test(newPassword)) {
+      errors.push("Le mot de passe doit contenir au moins une majuscule.");
+    }
+    if (!/\d/.test(newPassword)) {
+      errors.push("Le mot de passe doit contenir au moins un chiffre.");
+    }
+    if (!/[^A-Za-z0-9]/.test(newPassword)) {
+      errors.push(
+        "Le mot de passe doit contenir au moins un caractère spécial."
+      );
+    }
+
+    if (errors.length > 0) {
+      req.session.message = errors[0];
+      return res.redirect("/users/profile");
     }
 
     user.password = newPassword;
-    await user.save(); 
+    await user.save();
 
     req.session.message = "Mot de passe mis à jour avec succès.";
-    res.redirect('/cursus/dashboard');
+    res.redirect("/users/profile");
   } catch (err) {
     console.error("Erreur updatePassword:", err);
     req.session.message = "Erreur serveur.";
-    res.redirect('/users/profile');
+    res.redirect("/users/profile");
   }
 };
 

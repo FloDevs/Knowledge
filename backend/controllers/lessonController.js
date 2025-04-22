@@ -8,7 +8,8 @@ exports.getAllLessons = async () => {
 
 exports.createLesson = async (req, res) => {
   try {
-    const { title, description, videoUrl, documentUrl, price, cursus } = req.body;
+    const { title, description, videoUrl, documentUrl, price, cursus } =
+      req.body;
 
     await Lesson.create({
       title,
@@ -20,11 +21,11 @@ exports.createLesson = async (req, res) => {
     });
 
     req.session.message = "Leçon créée avec succès !";
-    res.redirect('/admin/cursus');
+    res.redirect("/admin/cursus");
   } catch (err) {
     console.error("Erreur createLesson:", err);
     req.session.message = "Erreur lors de la création de la leçon.";
-    res.redirect('/admin/cursus');
+    res.redirect("/admin/cursus");
   }
 };
 
@@ -44,11 +45,11 @@ exports.updateLesson = async (req, res) => {
       req.session.message = "Leçon mise à jour avec succès !";
     }
 
-    res.redirect('/admin/cursus');
+    res.redirect("/admin/cursus");
   } catch (err) {
     console.error("Erreur updateLesson:", err);
     req.session.message = "Erreur serveur lors de la mise à jour.";
-    res.redirect('/admin/cursus');
+    res.redirect("/admin/cursus");
   }
 };
 
@@ -57,14 +58,13 @@ exports.deleteLesson = async (req, res) => {
     await Lesson.findByIdAndDelete(req.params.id);
 
     req.session.message = "Leçon supprimée avec succès.";
-    res.redirect('/admin/cursus');
+    res.redirect("/admin/cursus");
   } catch (err) {
     console.error("Erreur deleteLesson:", err);
     req.session.message = "Erreur lors de la suppression de la leçon.";
-    res.redirect('/admin/cursus');
+    res.redirect("/admin/cursus");
   }
 };
-
 
 exports.getLessonViewById = async (req, res) => {
   try {
@@ -81,22 +81,19 @@ exports.getLessonViewById = async (req, res) => {
     // Check that the user has purchased the cursus or the lesson
     const hasAccess = await Purchase.findOne({
       user: userId,
-      $or: [
-        { lesson: id },
-        { cursus: cursusId }
-      ]
+      $or: [{ lesson: id }, { cursus: cursusId }],
     });
 
     if (!hasAccess) {
       return res.status(403).render("error", {
-        message: "Vous n'avez pas accès à cette leçon."
+        message: "Vous n'avez pas accès à cette leçon.",
       });
     }
 
     // Progress
     const progress = await LessonProgress.findOne({
       user: userId,
-      lesson: id
+      lesson: id,
     });
 
     const isCompleted = progress?.isCompleted || false;
@@ -105,14 +102,13 @@ exports.getLessonViewById = async (req, res) => {
       lesson,
       cursus: lesson.cursus,
       isCompleted,
-      pageStylesheet: "main/lesson"
-      
+      pageStylesheet: "main/lesson",
     });
   } catch (err) {
     console.error("Erreur vue leçon :", err);
     res.status(500).render("error", {
       message: "Erreur lors du chargement de la leçon.",
-      error: err
+      error: err,
     });
   }
 };

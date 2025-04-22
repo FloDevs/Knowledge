@@ -7,7 +7,7 @@
 .admin-users-container h1 {
   font-size: 2rem;
   margin-bottom: 2rem;
-  border-bottom: 2px solid #a30017;
+  border-bottom: 2px solid #cd2c2e;
   padding-bottom: 0.3rem;
   display: inline-block;
 }
@@ -55,19 +55,19 @@
 }
 
 .btn-edit {
-  background-color: #007bff;
+  background-color: #0074c7;
   color: white;
 }
 
 .btn-edit:hover {
-  background-color: #0056b3;
+  background-color: #00497c;
 }
 
 .btn-delete {
-  background-color: #dc3545;
+  background-color: #cd2c2e;
   color: white;
 }
 
 .btn-delete:hover {
-  background-color: #a30017;
+  background-color: #cd2c2e;
 }

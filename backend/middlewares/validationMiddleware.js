@@ -26,13 +26,12 @@ exports.validateEmail = body("email")
   .isEmail()
   .withMessage("L'email doit être valide.");
 
-  exports.validatePassword = body("password")
+exports.validatePassword = body("password")
   .isLength({ min: 6 })
-  // .withMessage("Le mot de passe doit contenir au moins 6 caractères.")
-  //.matches(/[A-Z]/)
-  //.withMessage("Le mot de passe doit contenir au moins une majuscule.")
-  //.matches(/\d/)
-  //.withMessage("Le mot de passe doit contenir au moins un chiffre.")
-  //.matches(/[^A-Za-z0-9]/)
-  //.withMessage("Le mot de passe doit contenir au moins un caractère spécial."); 
-
+  .withMessage("Le mot de passe doit contenir au moins 6 caractères.")
+  .matches(/[A-Z]/)
+  .withMessage("Le mot de passe doit contenir au moins une majuscule.")
+  .matches(/\d/)
+  .withMessage("Le mot de passe doit contenir au moins un chiffre.")
+  .matches(/[^A-Za-z0-9]/)
+  .withMessage("Le mot de passe doit contenir au moins un caractère spécial.");

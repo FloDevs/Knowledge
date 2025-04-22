@@ -1,7 +1,6 @@
 [
-    { "name": "Musique" },
-    { "name": "Informatique" },
-    { "name": "Jardinage" },
-    { "name": "Cuisine" }
-  ]
-  
+  { "name": "Musique" },
+  { "name": "Informatique" },
+  { "name": "Jardinage" },
+  { "name": "Cuisine" }
+]
