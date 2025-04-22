@@ -3,14 +3,18 @@
 <div class="lesson-container">
   <h1 class="lesson-title"><%= lesson.title %></h1>
   <p class="lesson-description"><%= lesson.description %></p>
-
+  <% if (lesson.textContent) { %>
+    <div class="lesson-text-content">
+      <p><%= lesson.textContent %></p>
+    </div>
+  <% } %>
   <% if (lesson.videoUrl) { %>
     <% let raw = lesson.videoUrl
          .replace(/&#x2F;/g, '/')                   
          .replace(/^https?:\/\/(www\.)?youtube\.com\//, 'https://www.youtube-nocookie.com/') 
          .replace('watch?v=', 'embed/')             
          .replace('&', '?');                        
-  
+    %>
     <div class="video-wrapper">
       <% if (raw.includes('/embed/')) { %>
         <iframe

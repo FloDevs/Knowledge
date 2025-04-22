@@ -9,13 +9,13 @@ exports.register = async (req, res) => {
 
     if (!confirmPassword || password !== confirmPassword) {
       req.session.message = "Les mots de passe ne correspondent pas.";
-      return res.redirect('/register');
+      return res.redirect('/auth/register');
     }
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       req.session.message = "Email déjà utilisé.";
-      return res.redirect('/register');
+      return res.redirect('/auth/register');
     }
 
     const newUser = await User.create({
@@ -116,5 +116,4 @@ exports.confirmEmail = async (req, res) => {
     });
   }
 };
-
 

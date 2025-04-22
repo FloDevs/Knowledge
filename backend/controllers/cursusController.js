@@ -10,6 +10,7 @@ exports.getAllCursusRaw = async () => {
   return await Cursus.find({}).populate("theme").lean();
 }; 
 
+
 exports.getAllCursus = async (req, res) => {
   try {
     const userId = req.session.user ? req.session.user._id : null;
@@ -25,18 +26,18 @@ exports.getAllCursus = async (req, res) => {
       );
     }
 
-    let cursusAchetésIds = [];
+    let purchasedCursusIds = [];
 
     if (userId) {
       const purchases = await Purchase.find({ user: userId });
-      cursusAchetésIds = purchases
+      purchasedCursusIds = purchases
         .filter(p => p.cursus)
         .map(p => p.cursus.toString());
     }
 
     res.render("main/cursus-list", {
       cursusList,
-      cursusAchetésIds,
+      purchasedCursusIds,
       searchQuery,
       pageStylesheet: "main/cursus-list"
     });
@@ -136,13 +137,13 @@ exports.getMyCursus = async (req, res) => {
   const userId = req.session.user._id;
 
   const purchases = await Purchase.find({ user: userId }).populate(["cursus", "lesson"]);
-  const cursusAchetés = purchases
+  const purchasedCursus = purchases
     .filter(p => p.cursus)
     .map(p => p.cursus);
 
   const data = [];
 
-  for (const cursus of cursusAchetés) {
+  for (const cursus of purchasedCursus) {
     const lessons = await Lesson.find({ cursus: cursus._id });
     const progress = await LessonProgress.find({
       user: userId,

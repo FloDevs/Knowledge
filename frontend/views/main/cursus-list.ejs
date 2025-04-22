@@ -10,7 +10,7 @@
   <% if (cursusList.length > 0) { %>
     <div class="cursus-grid">
       <% cursusList.forEach(cursus => {
-        const isAcheté = cursusAchetésIds.includes(cursus._id.toString());
+        const isPurchased = purchasedCursusIds.includes(cursus._id.toString());
       %>
         <div class="cursus-card">
           <div class="card-image">
@@ -23,7 +23,7 @@
             <div class="card-actions">
               <a href="/cursus/<%= cursus._id %>" class="btn">En savoir plus</a>
 
-              <% if (isAcheté) { %>
+              <% if (isPurchased) { %>
                 <span class="bought">✅</span>
               <% } else { %>
                 <form action="/cart/add/<%= cursus._id %>?type=cursus" method="POST">
