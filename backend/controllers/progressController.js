@@ -5,10 +5,10 @@ const Certification = require("../models/Certification");
 
 exports.markLessonCompleted = async (req, res) => {
   try {
-    const { userId } = req; // from auth
+    const userId = req.session?.user?._id;
     const { lessonId } = req.body;
 
-    // Mettre à jour ou créer la progression
+    // Update or create progress
     let progress = await LessonProgress.findOne({ user: userId, lesson: lessonId });
     if (!progress) {
       progress = await LessonProgress.create({
@@ -23,7 +23,6 @@ exports.markLessonCompleted = async (req, res) => {
       await progress.save();
     }
 
-    // Vérifier si toutes les leçons du cursus sont complétées
     const lesson = await Lesson.findById(lessonId);
     const allLessons = await Lesson.find({ cursus: lesson.cursus });
     const allLessonIds = allLessons.map(l => l._id.toString());
@@ -34,9 +33,8 @@ exports.markLessonCompleted = async (req, res) => {
       isCompleted: true
     });
 
-    // Si toutes les leçons du cursus sont complétées => Certification
+    // All lessons complete => Certification
     if (completedLessons.length === allLessons.length) {
-      // Vérifier si certification déjà existante
       const existingCertif = await Certification.findOne({
         user: userId,
         cursus: lesson.cursus
@@ -50,23 +48,20 @@ exports.markLessonCompleted = async (req, res) => {
       }
     }
 
-    res.json({ message: "Lesson marked as completed", progress });
+    res.redirect(`/cursus/${lesson.cursus}?message=Leçon complétée`);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
 
-// Récupérer la progression d'un utilisateur sur un cursus
 exports.getCursusProgress = async (req, res) => {
   try {
-    const { userId } = req; // from auth
+    const userId = req.session?.user?._id;
     const { cursusId } = req.params;
 
-    // Récupérer toutes les leçons du cursus
     const lessons = await Lesson.find({ cursus: cursusId });
     const lessonIds = lessons.map(l => l._id);
     
-    // Récupérer la progression
     const progressData = await LessonProgress.find({
       user: userId,
       lesson: { $in: lessonIds }

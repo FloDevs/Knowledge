@@ -1,0 +1,19 @@
+body {
+  font-family: 'Comic Sans MS', cursive, sans-serif;
+
+}
+
+.burger-btn {
+  display: none;
+  font-size: 2rem;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+@media (max-width: 1024px) {
+  .burger-btn {
+    display: block;
+  }
+}

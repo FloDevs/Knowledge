@@ -1,0 +1,50 @@
+.admin-header {
+  background-color: #004a87;
+  padding: 1rem 2rem;
+}
+
+.admin-navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.admin-logo-img {
+  height: 6rem;
+  width: auto;
+  margin-left: 2rem;
+}
+
+.admin-nav-links {
+  list-style: none;
+  display: flex;
+  gap: 2rem;
+  margin: 0;
+  padding: 0;
+}
+
+.admin-nav-links li a {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1.5rem;
+}
+
+.admin-nav-links li a:hover {
+  text-decoration: underline;
+}
+
+
+.alert {
+  max-width: 50rem;
+  margin: 1.5rem auto;
+  padding: 1rem 1.5rem;
+  border: 1px solid #d1d5db; /* gris clair */
+  background-color: #f9fafb; /* fond doux */
+  color: #111827; /* texte foncé */
+  font-size: 1rem;
+  border-radius: 0.5rem;
+  text-align: center;
+  box-shadow: 0 0.1rem 0.3rem rgba(0, 0, 0, 0.05);
+}

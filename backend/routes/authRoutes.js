@@ -4,13 +4,12 @@ const validationMiddleware = require("../middlewares/validationMiddleware");
 const { validateRequest } = validationMiddleware;
 const authController = require("../controllers/authController");
 
-// VUES (GET)
 router.get('/register', (req, res) => {
-  res.render('auth/register', { message: req.query.message });
+  res.render('auth/register', { message: req.query.message, pageStylesheet: 'auth/register'});
 });
 
 router.get('/login', (req, res) => {
-  res.render('auth/login', { message: req.query.message });
+  res.render('auth/login', { message: req.query.message, pageStylesheet: 'auth/login' });
 });
 
 router.get('/confirm', authController.confirmEmail);

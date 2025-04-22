@@ -1,18 +1,21 @@
 <%- include('../partials/header.ejs', { pageTitle: 'Mes certifications' }) %>
 
-<h2>Mes certificats</h2>
+<div class="certifications-container">
+  <h2>Mes certificats</h2>
 
-<% if (certifications.length === 0) { %>
-  <p>Vous n'avez pas encore obtenu de certificat.</p>
-<% } else { %>
-  <ul>
-    <% certifications.forEach(certif => { %>
-      <li>
-        <strong><%= certif.cursus.title %></strong> - Délivré le <%= new Date(certif.issuedAt).toLocaleDateString('fr-FR') %>
-        <a href="/certifications/download/<%= certif.cursus._id %>">📄 Télécharger</a>
-      </li>
-    <% }) %>
-  </ul>
-<% } %>
+  <% if (certifications.length === 0) { %>
+    <p class="no-certif">Vous n'avez pas encore obtenu de certificat.</p>
+  <% } else { %>
+    <ul class="certification-list">
+      <% certifications.forEach(certif => { %>
+        <li>
+          <span class="certif-title"><strong><%= certif.cursus.title %></strong></span>
+          <span class="certif-date">– Délivré le <%= new Date(certif.issuedAt).toLocaleDateString('fr-FR') %></span>
+          <a class="certif-download" href="/certifications/download/<%= certif.cursus._id %>">📄 Télécharger</a>
+        </li>
+      <% }) %>
+    </ul>
+  <% } %>
+</div>
 
 <%- include('../partials/footer.ejs') %>

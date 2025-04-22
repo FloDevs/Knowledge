@@ -1,0 +1,38 @@
+.site-footer {
+    background-color: #0074c7; /* Bleu vif */
+    color: white;
+    padding: 2rem;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    align-items: center;
+    font-size: 1.2rem;
+  }
+  .footer-left {
+    padding-left: 6rem;
+  }
+  .social-icons {
+    margin-left: 3.5rem;
+  }
+
+  .social-icons img {
+    width: 2rem;
+    height: 2rem;
+    margin-right: 1rem;
+    vertical-align: middle;
+  }
+  .footer-right {
+    padding-right: 6rem;
+  }
+  .footer-right a {
+    color: white;
+    margin-left: 15px;
+    text-decoration: none;
+    font-size: 1rem;
+  }
+  
+  .footer-right a:hover,
+  .social-icons a:hover {
+    opacity: 0.8;
+  }
+  

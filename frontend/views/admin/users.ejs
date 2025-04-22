@@ -1,38 +1,46 @@
 <%- include('../partials/admin-header.ejs', { pageTitle: 'Gérer les Utilisateurs' }) %>
 
-<h1>👤 Gérer les utilisateurs</h1>
+<div class="admin-users-container">
+  <h1>👥 Gérer les utilisateurs</h1>
 
-<table>
-  <thead>
-    <tr>
-      <th>Nom d'utilisateur</th>
-      <th>Email</th>
-      <th>Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% users.forEach(user => { %>
+  <table class="user-table">
+    <thead>
       <tr>
-        <td>
-          <form method="POST" action="/users/update/<%= user._id %>">
-            <%- include('../partials/csrf') %>
-            <input type="text" name="username" value="<%= user.username %>" required>
-        </td>
-        <td>
-            <input type="email" name="email" value="<%= user.email %>" required>
-        </td>
-        <td>
-            <button type="submit">Modifier</button>
-          </form>
-
-          <form method="POST" action="/users/delete/<%= user._id %>" onsubmit="return confirm('Supprimer cet utilisateur ?');" style="display:inline;">
-            <%- include('../partials/csrf') %>
-            <button type="submit" style="background-color: red; color: white;">Supprimer</button>
-          </form>
-        </td>
+        <th>Nom d'utilisateur</th>
+        <th>Email</th>
+        <th>Actions</th>
       </tr>
-    <% }) %>
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      <% users.forEach(user => { %>
+        <tr>
+          <form method="POST" action="/users/update/<%= user._id %>?_method=PUT">
+            <%- include('../partials/csrf') %>
+            <td>
+              <input type="text" name="name" value="<%= user.name %>" required>
+            </td>
+            <td>
+              <input type="email" name="email" value="<%= user.email %>" required>
+            </td>
+            <td class="actions-cell">
+              <label>Admin ?</label>
+              <select name="isAdmin">
+                <option value="false" <%= !user.isAdmin ? 'selected' : '' %>>Non</option>
+                <option value="true" <%= user.isAdmin ? 'selected' : '' %>>Oui</option>
+              </select>
+            
+              <button type="submit" class="btn-edit">Modifier</button>
+            </form>
+
+            <form method="POST" action="/users/delete/<%= user._id %>?_method=DELETE" onsubmit="return confirm('Supprimer cet utilisateur ?');">
+              <%- include('../partials/csrf') %>
+              <button type="submit" class="btn-delete">Supprimer</button>
+            </form>
+            </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
 
 <%- include('../partials/footer.ejs') %>

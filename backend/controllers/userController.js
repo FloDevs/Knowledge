@@ -1,17 +1,12 @@
 const User = require("../models/User");
 const Purchase = require("../models/Purchase");
 const bcrypt = require('bcrypt');
-// const Lesson = require("../models/Lesson");
-// const Cursus = require("../models/Cursus");
 const LessonProgress = require("../models/LessonProgress");
 
-// GET ALL USERS (Admin)
 exports.getAllUsers = async () => {
   return await User.find().lean();
 };
 
-
-// GET USER BY ID (Admin or same user)
 exports.getMyProfile = async (req, res) => {
   try {
     const userId = req.session.user._id;
@@ -21,7 +16,8 @@ exports.getMyProfile = async (req, res) => {
 
     res.render('main/profile', {
       pageTitle: 'Mon profil',
-      user
+      user,
+      pageStylesheet: "main/profile"
     });
   } catch (err) {
     console.error("Erreur profil :", err);
@@ -29,10 +25,9 @@ exports.getMyProfile = async (req, res) => {
   }
 };
 
-// UPDATE USER
 exports.updateUser = async (req, res) => {
   try {
-    const { name } = req.body;
+    const { name, email, isAdmin } = req.body;
     const userId = req.params.id;
     const sessionUser = req.session.user;
 
@@ -44,16 +39,25 @@ exports.updateUser = async (req, res) => {
     if (!user) return res.status(404).send("Utilisateur non trouvé");
 
     user.name = name || user.name;
+    user.email = email || user.email;
+
+    // Only an admin can be change the type of an user
+    if (sessionUser.isAdmin && typeof isAdmin !== "undefined") {
+      user.isAdmin = isAdmin === "true";
+    }
+
     await user.save();
 
-    req.session.message = "Profil mis à jour avec succès";
-    res.redirect("/cursus/dashboard");
+    req.session.message = "Utilisateur mis à jour avec succès";
+    res.redirect("/admin/users");
 
   } catch (err) {
     console.error("Erreur updateUser:", err);
-    res.status(500).send("Erreur serveur");
+    req.session.message = "Erreur lors de la mise à jour";
+    res.redirect("/admin/users");
   }
 };
+
 
 exports.updatePassword = async (req, res) => {
   try {
@@ -94,50 +98,11 @@ exports.updatePassword = async (req, res) => {
   }
 };
 
-
-
-
-// DELETE USER
 exports.deleteUser = async (req, res) => {
   try {
     await User.findByIdAndDelete(req.params.id);
     res.json({ message: "User deleted" });
   } catch (err) {
     res.status(500).json({ error: err.message });
-  }
-};
-
-exports.getMyContent = async (req, res) => {
-  try {
-    const userId = req.session.user._id;
-
-    // Récupère tous les achats
-    const purchases = await Purchase.find({ user: userId })
-      .populate("cursus")
-      .populate("lesson");
-
-    // Sépare cursus et leçons
-    const cursusAchetés = purchases
-      .filter(p => p.cursus)
-      .map(p => p.cursus);
-
-    const leçonsAchetées = purchases
-      .filter(p => p.lesson)
-      .map(p => p.lesson);
-
-    // Récupérer la progression des leçons
-    const progressList = await LessonProgress.find({ user: userId });
-
-    res.render("user/my-content", {
-      cursusAchetés,
-      leçonsAchetées,
-      progressList
-    });
-  } catch (err) {
-    console.error("Erreur récupération contenu utilisateur :", err);
-    res.status(500).render("error", {
-      message: "Impossible d'afficher vos contenus",
-      error: err
-    });
   }
 };

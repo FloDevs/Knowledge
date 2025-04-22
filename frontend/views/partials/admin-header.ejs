@@ -2,19 +2,38 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <title><%= pageTitle || 'Admin Panel' %></title>
+  <title><%= pageTitle || 'Knowledge' %></title>
+  <link rel="stylesheet" href="/css/global.css" type="text/css">
+  <link rel="stylesheet" href="/css/partials/admin-header.css" type="text/css">
+  <link rel="stylesheet" href="/css/partials/footer.css" type="text/css">
+  <% if (typeof pageStylesheet !== "undefined" && pageStylesheet) { %>
+    <link rel="stylesheet" href="/css/<%= pageStylesheet %>.css" />
+  <% } else { %>
+  <% } %>
+  <script src="/js/toggle-block.js" defer></script>
 </head>
 <body>
-  <header>
-    <h1>Admin Panel</h1>
-    <nav>
-      <ul>
+  <header class="admin-header">
+    <nav class="admin-navbar">
+      <div class="admin-logo">
+        <a href="/admin/dashboard">
+          <img src="/img/logo.jfif" alt="Logo Admin" class="admin-logo-img" />
+        </a>
+      </div>
+  
+      <ul class="admin-nav-links">
         <li><a href="/admin/dashboard">Dashboard</a></li>
         <li><a href="/admin/users">Utilisateurs</a></li>
         <li><a href="/admin/cursus">Cursus</a></li>
-        <li><a href="/admin/lessons">Leçons</a></li>
         <li><a href="/admin/orders">Commandes</a></li>
+        <li><a href="/">Site officiel</a></li>
+        <li><a href="/auth/logout">Se déconnecter</a></li>
       </ul>
     </nav>
   </header>
+  <% if (message) { %>
+    <div class="alert">
+      <%= message %>
+    </div>
+  <% } %>
   <main>

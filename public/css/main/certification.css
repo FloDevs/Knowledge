@@ -1,0 +1,64 @@
+.certifications-container {
+    max-width: 60rem;
+    margin: 3rem auto;
+    padding: 0 1.5rem;
+    text-align: center;
+  }
+  
+  .certifications-container h2 {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    border-bottom: 2px solid #a30017;
+    display: inline-block;
+    padding-bottom: 0.3rem;
+  }
+  
+  .no-certif {
+    font-size: 1rem;
+    color: #555;
+  }
+  
+  .certification-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 auto;
+    max-width: 40rem;
+    text-align: left;
+  }
+  
+  .certification-list li {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 0.4rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .certif-title {
+    font-size: 1.1rem;
+    color: #005ca1;
+  }
+  
+  .certif-date {
+    font-size: 0.95rem;
+    color: #333;
+  }
+  
+  .certif-download {
+    align-self: flex-start;
+    background-color: #0073c6;
+    color: white;
+    text-decoration: none;
+    padding: 0.4rem 0.8rem;
+    border-radius: 0.3rem;
+    font-size: 0.9rem;
+    transition: background-color 0.2s ease;
+  }
+  
+  .certif-download:hover {
+    background-color: #005ea0;
+  }
+  

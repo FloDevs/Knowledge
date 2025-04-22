@@ -1,19 +1,28 @@
 <%- include('../partials/header.ejs', { pageTitle: 'Inscription' }) %>
 
-<h2>Créer un compte</h2>
-<form action="/auth/register" method="POST">
-  <%- include('../partials/csrf') %>
+<div class="register-container">
+  <h1>Rejoignez nous !</h1>
 
-  <label for="name">Nom :</label>
-  <input type="text" name="name" id="name" required>
+  <form class="register-form" action="/auth/register" method="POST">
+    <%- include('../partials/csrf') %>
 
-  <label for="email">Email :</label>
-  <input type="email" name="email" id="email" required>
+    <h2>S’inscrire</h2>
 
-  <label for="password">Mot de passe :</label>
-  <input type="password" name="password" id="password" required>
+    <input type="text" name="name" placeholder="Votre nom" required>
+    <input type="email" name="email" placeholder="Votre email" required>
+    <input type="password" name="password" placeholder="Votre mot de passe" required>
+    <input type="password" name="confirmPassword" placeholder="Confirmer mot de passe" required>
 
-  <button type="submit">S'inscrire</button>
-</form>
+    <button type="submit">S’inscrire</button>
+  </form>
+
+  <p class="social-text">Ou ici !</p>
+
+  <div class="social-icons">
+    <a href="#"><img src="/img/facebook.png" alt="Facebook"></a>
+    <a href="#"><img src="/img/twitter.png" alt="Twitter"></a>
+    <a href="#"><img src="/img/instagram.png" alt="Instagram"></a>
+  </div>
+</div>
 
 <%- include('../partials/footer.ejs') %>

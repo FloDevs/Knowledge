@@ -4,8 +4,6 @@ const themeController = require("../controllers/themeController");
 const { isAdmin } = require("../middlewares");
 const { isAuthenticated } = require("../middlewares");
 
-
-// CRUD (admin)
 router.post("/create", isAuthenticated, isAdmin,themeController.createTheme);
 router.get("/", themeController.getAllThemes);
 router.get("/:id", themeController.getThemeById);

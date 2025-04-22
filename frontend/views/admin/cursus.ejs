@@ -1,80 +1,196 @@
 <%- include('../partials/admin-header.ejs', { pageTitle: 'Gérer les Cursus' }) %>
 
-<h1>📚 Gérer les cursus & leçons</h1>
+<div class="admin-cursus-container">
 
-<!-- FORMULAIRE D'AJOUT DE CURSUS -->
-<section>
-  <h2>➕ Ajouter un nouveau cursus</h2>
-  <form method="POST" action="/cursus/create">
-    <%- include('../partials/csrf') %>
-    <input name="title" placeholder="Titre" required>
-    <input name="description" placeholder="Description">
-    <input name="price" type="number" placeholder="Prix" step="0.01">
-    <button type="submit">Créer</button>
-  </form>
-</section>
+  <!-- Manage themes -->
+  <section class="toggle-block collapsed">
+    <div class="toggle-header">
+      <h1>🎨 Gérer les Thèmes</h1>
+      <span class="arrow">▼</span>
+    </div>
 
-<hr>
-
-<!-- AFFICHAGE ET MODIFICATION DES CURSUS -->
-<% cursusWithLessons.forEach(cursus => { %>
-  <section>
-    <h2><%= cursus.title %></h2>
-
-    <!-- FORMULAIRE DE MODIF CURSUS -->
-    <form method="POST" action="/cursus/update/<%= cursus._id %>">
+    <div class="toggle-content">
+      <form method="POST" action="/themes/create">
         <%- include('../partials/csrf') %>
-      <input name="title" value="<%= cursus.title %>" required>
-      <input name="description" value="<%= cursus.description %>">
-      <input name="price" type="number" value="<%= cursus.price %>" step="0.01">
-      <button type="submit">Modifier</button>
-    </form>
+        <label for="theme-name">Nouveau thème</label>
+        <input type="text" id="theme-name" name="name" required />
+        <button type="submit">Créer</button>
+      </form>
 
-    <!-- SUPPRESSION CURSUS -->
-    <form method="DELETE" action="/cursus/delete/<%= cursus._id %>" onsubmit="return confirm('Supprimer ce cursus ?')">
-      <%- include('../partials/csrf') %>
-      <button type="submit">🗑 Supprimer le cursus</button>
-    </form>
+      <ul>
+        <% themes.forEach(theme => { %>
+          <li>
+            <form method="POST" action="/themes/update/<%= theme._id %>?_method=PUT">
+              <%- include('../partials/csrf') %>
+              <input type="text" name="name" value="<%= theme.name %>" required />
+              <button type="submit">💾 Modifier</button>
+            </form>
 
-    <hr>
-
-    <!-- FORMULAIRE D'AJOUT DE LEÇON -->
-    <h4>➕ Ajouter une leçon</h4>
-    <form method="POST" action="/lessons/create">
-      <%- include('../partials/csrf') %>
-      <input name="title" placeholder="Titre" required>
-      <input name="description" placeholder="Description">
-      <textarea name="textContent" placeholder="Contenu texte" rows="4" cols="50"></textarea>
-      <input name="videoUrl" placeholder="URL de la vidéo (facultatif)">
-      <input name="documentUrl" placeholder="URL du PDF (facultatif)">
-      <input name="price" type="number" placeholder="Prix" step="0.01">
-      <input type="hidden" name="cursus" value="<%= cursus._id %>">
-      <button type="submit">Créer</button>
-    </form>
-
-    <hr>
-
-    <!-- LISTE DES LEÇONS DU CURSUS -->
-    <ul>
-      <% cursus.lessons.forEach(lesson => { %>
-        <li>
-          <form method="POST" action="/lessons/update/<%= lesson._id %>">
-            <%- include('../partials/csrf') %>
-            <input name="title" value="<%= lesson.title %>" required>
-            <input name="description" value="<%= lesson.description %>">
-            <textarea name="textContent" rows="3" cols="50"><%= lesson.textContent || '' %></textarea>
-            <input name="videoUrl" value="<%= lesson.videoUrl || '' %>">
-            <input name="documentUrl" value="<%= lesson.documentUrl || '' %>">
-            <input name="price" type="number" value="<%= lesson.price %>" step="0.01">
-            <button type="submit">💾 Modifier</button>
-          </form>
-          <form method="POST" action="/lessons/delete/<%= lesson._id %>" onsubmit="return confirm('Supprimer cette leçon ?')">
-            <button type="submit">🗑 Supprimer</button>
-          </form>
-        </li>
-      <% }) %>
-    </ul>
+            <form method="POST" action="/themes/delete/<%= theme._id %>?_method=DELETE" onsubmit="return confirm('Supprimer ce thème ?');">
+              <%- include('../partials/csrf') %>
+              <button type="submit">🗑 Supprimer</button>
+            </form>
+          </li>
+        <% }) %>
+      </ul>
+    </div>
   </section>
-<% }) %>
+
+  <!-- Add a new cursus  -->
+  <section class="toggle-block collapsed">
+    <div class="toggle-header">
+      <h2>➕ Ajouter un nouveau cursus</h2>
+      <span class="arrow">▼</span>
+    </div>
+
+    <div class="toggle-content">
+      <form method="POST" action="/cursus/create" enctype="multipart/form-data">
+        <%- include('../partials/csrf') %>
+        <label for="title">Titre</label>
+        <input id="title" name="title" required />
+
+        <label for="description">Description</label>
+        <input id="description" name="description" />
+
+        <label for="theme">Thème</label>
+        <select name="theme" id="theme" required>
+          <option value="">-- Sélectionner un thème --</option>
+          <% themes.forEach(theme => { %>
+            <option value="<%= theme._id %>"><%= theme.name %></option>
+          <% }) %>
+        </select>
+
+        <label for="price">Prix</label>
+        <input id="price" name="price" type="number" step="0.01" />
+
+        <label for="img">Image du cursus</label>
+        <input type="file" id="img" name="img" accept="image/*" />
+
+        <label>
+          <input type="checkbox" name="featured" value="true">
+          Mettre en avant
+        </label>
+
+        <button type="submit">Créer</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Display all cursus -->
+  <% cursusWithLessons.forEach(cursus => { %>
+    <section class="toggle-block collapsed">
+      <div class="toggle-header">
+        <h2><%= cursus.title %></h2>
+        <span class="arrow">▼</span>
+      </div>
+
+      <div class="toggle-content">
+        <!-- FORM MODIF CURSUS -->
+        <form method="POST" action="/cursus/update/<%= cursus._id %>?_method=PUT" enctype="multipart/form-data">
+          <%- include('../partials/csrf') %>
+          <label for="title-<%= cursus._id %>">Titre</label>
+          <input id="title-<%= cursus._id %>" name="title" value="<%= cursus.title %>" required />
+
+          <label for="description-<%= cursus._id %>">Description</label>
+          <input id="description-<%= cursus._id %>" name="description" value="<%= cursus.description %>" />
+
+          <label for="theme-<%= cursus._id %>">Thème</label>
+          <select name="theme" id="theme-<%= cursus._id %>" required>
+            <% themes.forEach(theme => { %>
+              <option value="<%= theme._id %>" <%= (cursus.theme && cursus.theme._id.toString() === theme._id.toString()) ? 'selected' : '' %>><%= theme.name %></option>
+            <% }) %>
+          </select>
+
+          <label for="price-<%= cursus._id %>">Prix</label>
+          <input id="price-<%= cursus._id %>" name="price" type="number" value="<%= cursus.price %>" step="0.01" />
+
+          <% if (cursus.img) { %>
+            <p>Image actuelle :</p>
+            <img src="/uploads/cursus/<%= cursus.img %>" alt="Image" style="max-width: 200px; border-radius: 4px;" />
+          <% } %>
+
+          <label for="img-<%= cursus._id %>">Changer l’image</label>
+          <input type="file" id="img-<%= cursus._id %>" name="img" accept="image/*" />
+
+          <label>
+            <input type="checkbox" name="featured" value="true" <%= cursus.featured ? 'checked' : '' %> />
+            Mettre en avant (featured)
+          </label>
+
+          <button type="submit">Modifier</button>
+        </form>
+
+        <!-- DELETE -->
+        <form method="POST" action="/cursus/delete/<%= cursus._id %>?_method=DELETE">
+          <%- include('../partials/csrf') %>
+          <button type="submit">🗑 Supprimer le cursus</button>
+        </form>
+
+        <!-- ADD A LESSON -->
+        <h4>➕ Ajouter une leçon</h4>
+        <form method="POST" action="/lessons/create">
+          <%- include('../partials/csrf') %>
+          <label for="title-lesson-<%= cursus._id %>">Titre</label>
+          <input id="title-lesson-<%= cursus._id %>" name="title" required />
+
+          <label for="desc-lesson-<%= cursus._id %>">Description</label>
+          <input id="desc-lesson-<%= cursus._id %>" name="description" />
+
+          <label for="text-lesson-<%= cursus._id %>">Contenu texte</label>
+          <textarea id="text-lesson-<%= cursus._id %>" name="textContent" rows="4" cols="50"></textarea>
+
+          <label for="video-lesson-<%= cursus._id %>">URL de la vidéo</label>
+          <input type="url" id="video-lesson-<%= cursus._id %>" name="videoUrl" />
+
+          <label for="doc-lesson-<%= cursus._id %>">URL du PDF</label>
+          <input type="url" id="doc-lesson-<%= cursus._id %>" name="documentUrl" />
+
+          <label for="price-lesson-<%= cursus._id %>">Prix</label>
+          <input id="price-lesson-<%= cursus._id %>" name="price" type="number" step="0.01" />
+
+          <input type="hidden" name="cursus" value="<%= cursus._id %>" />
+          <button type="submit">Créer</button>
+        </form>
+
+        <!-- Display of lesson -->
+        <h4>Modifier les leçons</h4>
+        <ul>
+          <% cursus.lessons.forEach(lesson => { %>
+            <li>
+              <form method="POST" action="/lessons/update/<%= lesson._id %>?_method=PUT">
+                <%- include('../partials/csrf') %>
+                <label for="title-<%= lesson._id %>">Titre</label>
+                <input id="title-<%= lesson._id %>" name="title" value="<%= lesson.title %>" required />
+
+                <label for="desc-<%= lesson._id %>">Description</label>
+                <input id="desc-<%= lesson._id %>" name="description" value="<%= lesson.description %>" />
+
+                <label for="text-<%= lesson._id %>">Contenu texte</label>
+                <textarea id="text-<%= lesson._id %>" name="textContent" rows="3" cols="50"><%= lesson.textContent || '' %></textarea>
+
+                <label for="video-<%= lesson._id %>">URL de la vidéo</label>
+                <input type="url" id="video-<%= lesson._id %>" name="videoUrl" value="<%= lesson.videoUrl || '' %>" />
+
+                <label for="doc-<%= lesson._id %>">URL du PDF</label>
+                <input type="url" id="doc-<%= lesson._id %>" name="documentUrl" value="<%= lesson.documentUrl || '' %>" />
+
+                <label for="price-<%= lesson._id %>">Prix</label>
+                <input id="price-<%= lesson._id %>" name="price" type="number" value="<%= lesson.price %>" step="0.01" />
+
+                <button type="submit">Modifier</button>
+              </form>
+
+              <form method="POST" action="/lessons/delete/<%= lesson._id %>?_method=DELETE">
+                <%- include('../partials/csrf') %>
+                <button type="submit">🗑 Supprimer</button>
+              </form>
+            </li>
+          <% }) %>
+        </ul>
+      </div>
+    </section>
+  <% }) %>
+
+</div>
 
 <%- include('../partials/footer.ejs') %>

@@ -3,24 +3,58 @@
 <head>
   <meta charset="UTF-8" />
   <title><%= pageTitle || 'Knowledge' %></title>
+  <link rel="stylesheet" href="/css/global.css" type="text/css">
+  <link rel="stylesheet" href="/css/partials/header.css" type="text/css">
+  <link rel="stylesheet" href="/css/partials/footer.css" type="text/css">
+  <% if (typeof pageStylesheet !== "undefined" && pageStylesheet) { %>
+    <link rel="stylesheet" href="/css/<%= pageStylesheet %>.css" />
+  <% } else { %>
+  <% } %>
+  <link rel="icon" href="/img/favicon.png" type="image/x-icon">
   <script src="/js/search.js" defer></script>
 </head>
 <body>
-  <header>
-    <h1>Knowledge</h1>
-    <nav>
-      <ul>
-        <li><a href="/">Accueil</a></li>
-        <li><a href="/cursus">Formations</a></li>
-        <% if (user) { %>
-          <li><a href="/cursus/dashboard">Mes Formations</a></li>
-          <li><a href="/auth/logout">Se déconnecter</a></li>
-        <% } else { %>
-          <li><a href="/auth/register">S'inscrire</a></li>
-          <li><a href="/auth/login">Se connecter</a></li>
-        <% } %>
-      </ul>
+  <header class="main-header">
+    <nav class="navbar">
+      <div class="navbar-left">
+        <a href="/">
+          <img src="/img/logo.jfif" alt="Logo" class="logo-img" />
+        </a>
+        <ul class="nav-links-left">
+          <li><a href="/">Accueil</a></li>
+          <li><a href="/cursus">Formations</a></li>
+          <% if (user) { %>
+            <li><a href="/cursus/dashboard">Mon espace</a></li>
+            <li><a href="/certifications/my-certifications">Mes certifications</a></li>
+            <% } else { %><% } %>
+
+            <% if (user && user.isAdmin) { %>
+              <li><a href="/admin/dashboard">Dashboard Admin</a></li>
+            <% } %>
+        </ul>
+      </div>
+  
+      <div class="navbar-right">
+        <form id="globalSearchForm" action="/cursus" method="GET" class="search-form">
+          <input type="text" name="q" id="searchCursus" placeholder="Rechercher une formation..." />
+          <button type="submit" id="searchCursusBtn">🔍</button>
+        </form>
+  
+        <ul class="nav-links-right">
+          <% if (user) { %>
+            <li><a href="/cart">Mon panier</a></li>
+            <li><a href="/auth/logout">Se déconnecter</a></li>
+          <% } else { %>
+            <li><a href="/auth/register">S'inscrire</a></li>
+            <li><a href="/auth/login">Se connecter</a></li>
+          <% } %>
+        </ul>
+      </div>
     </nav>
   </header>
-
+  <% if (message) { %>
+    <div class="alert">
+      <%= message %>
+    </div>
+  <% } %>
   <main>

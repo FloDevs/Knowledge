@@ -1,8 +1,5 @@
-// createAdmin.js
-
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
-const User = require('../backend/models/User'); // adapte le chemin si besoin
+const User = require('../backend/models/User');
 require('dotenv').config();
 
 async function main() {
@@ -15,16 +12,16 @@ async function main() {
     const admin = new User({
       name: 'Admin',
       email: 'admin@example.com',
-      password: "superpassword",
+      password: "Superpassword1!",
       isAdmin: true,
       isVerified: true,
     });
 
     await admin.save();
-    console.log('✅ Admin créé avec succès !');
+    console.log('Admin créé avec succès !');
     mongoose.disconnect();
   } catch (err) {
-    console.error('❌ Erreur lors de la création de l\'admin :', err);
+    console.error('Erreur lors de la création de l\'admin :', err);
     mongoose.disconnect();
   }
 }

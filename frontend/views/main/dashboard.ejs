@@ -1,41 +1,51 @@
 <%- include('../partials/header.ejs', { pageTitle: 'Dashboard' }) %>
-<% if (message) { %>
-  <div class="alert alert-success">
-    <%= message %>
-  </div>
-<% } %>
 
-<h2>Mon Tableau de bord</h2>
-
-<section>
-  <h3>Mes cursus en cours</h3>
-  <ul>
-    <% userCursus.forEach(function(cursus) { %>
-      <li>
-        <a href="/cursus/<%= cursus.id %>"><%= cursus.title %></a>
-        (Progression : <%= cursus.progress %>%)
-      </li>
-    <% }); %>
-  </ul>
-</section>
-
-<section>
-  <h3>Leçons achetées individuellement</h3>
-  <% if (userLessons.length === 0) { %>
-    <p>Vous n'avez pas encore acheté de leçon seule.</p>
-  <% } else { %>
-    <ul>
-      <% userLessons.forEach(function(lesson) { %>
-        <li>
-          <a href="/lessons/<%= lesson.id %>"><%= lesson.title %></a>
-          <% if (lesson.cursusTitle) { %> — du cursus : <%= lesson.cursusTitle %><% } %>
-        </li>
+<div class="dashboard-container">
+  <h1>Mon Tableau de bord</h1> <br>
+  <a href="/users/profile" class="btn-primary">Mon profil</a>
+  <!-- CURSUS EN COURS -->
+  <section>
+    <h2>Mes cursus en cours</h2>
+    <div class="card-container">
+      <% userCursus.forEach(function(cursus) { %>
+        <div class="cursus-card">
+          <img src="/uploads/cursus/<%= cursus.img %>" />
+          <div class="cursus-content">
+            <h3><a href="/cursus/<%= cursus.id %>"><%= cursus.title %></a></h3>
+            <div class="progress-bar">
+              <div class="progress" style="width: <%= cursus.progress %>%;"></div>
+            </div>
+            <p><%= cursus.progress %>% complété</p>
+            <a href="/cursus/<%= cursus.id %>" class="btn-primary">Reprendre</a>
+          </div>
+        </div>
       <% }); %>
-    </ul>
-  <% } %>
-</section>
+    </div>
+  </section>
 
-<a href="/users/profile">Mon profil</a>
+  <section>
+    <h2>Leçons achetées individuellement</h2>
+    <% if (userLessons.length === 0) { %>
+      <p>Vous n'avez pas encore acheté de leçon seule.</p>
+    <% } else { %>
+      <div class="card-container">
+        <% userLessons.forEach(function(lesson) { %>
+          <div class="lesson-card">
+            <div class="lesson-content">
+              <h3><a href="/lessons/<%= lesson.id %>"><%= lesson.title %></a></h3>
+              <% if (lesson.cursusTitle) { %>
+                <p>Du cursus : <strong><%= lesson.cursusTitle %></strong></p>
+              <% } else { %>
+                <p>Leçon achetée individuellement</p>
+              <% } %>
+            </div>
+          </div>
+        <% }); %>
+      </div>
+    <% } %>
+  </section>
 
+  
+</div>
 
 <%- include('../partials/footer.ejs') %>

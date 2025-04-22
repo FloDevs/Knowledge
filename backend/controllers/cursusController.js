@@ -1,9 +1,10 @@
 const Cursus = require("../models/Cursus");
-// const User = require("../models/User");
 const Purchase = require("../models/Purchase");
 const Lesson = require("../models/Lesson");
 const LessonProgress = require("../models/LessonProgress");
 const Certification = require("../models/Certification");
+const fs = require('fs');
+const path = require('path');
 
 exports.getAllCursusRaw = async () => {
   return await Cursus.find({}).populate("theme").lean();
@@ -12,8 +13,17 @@ exports.getAllCursusRaw = async () => {
 exports.getAllCursus = async (req, res) => {
   try {
     const userId = req.session.user ? req.session.user._id : null;
+    const searchQuery = req.query.q ? req.query.q.toLowerCase() : "";
 
-    const cursusList = await Cursus.find({}).populate("theme");
+    let cursusList = await Cursus.find({}).populate("theme");
+
+    // Filter if searching
+    if (searchQuery) {
+      cursusList = cursusList.filter(c =>
+        c.title.toLowerCase().includes(searchQuery) ||
+        (c.description && c.description.toLowerCase().includes(searchQuery))
+      );
+    }
 
     let cursusAchetésIds = [];
 
@@ -26,7 +36,9 @@ exports.getAllCursus = async (req, res) => {
 
     res.render("main/cursus-list", {
       cursusList,
-      cursusAchetésIds
+      cursusAchetésIds,
+      searchQuery,
+      pageStylesheet: "main/cursus-list"
     });
   } catch (err) {
     console.error("Erreur dans getAllCursus :", err);
@@ -37,6 +49,88 @@ exports.getAllCursus = async (req, res) => {
   }
 };
 
+exports.createCursus = async (req, res) => {
+  try {
+    const { title, description, price, theme } = req.body;
+    const img = req.file ? req.file.filename : "default.jpg";
+    const featured = req.body.featured === 'true';
+
+    await Cursus.create({ title, description, price, theme, featured, img });
+
+    req.session.message = "Cursus créé avec succès !";
+    res.redirect('/admin/cursus');
+  } catch (err) {
+    console.error("Erreur createCursus:", err);
+    req.session.message = "Erreur lors de la création du cursus.";
+    res.redirect('/admin/cursus');
+  }
+};
+
+exports.updateCursus = async (req, res) => {
+  try {
+    const { title, description, price, theme } = req.body;
+    const featured = req.body.featured === 'true';
+
+    const cursus = await Cursus.findById(req.params.id);
+    if (!cursus) {
+      req.session.message = "Cursus introuvable.";
+      return res.redirect('/admin/cursus');
+    }
+
+    if (req.file) {
+      if (cursus.img && cursus.img !== 'default.jpg') {
+        const oldImgPath = path.join(__dirname, '../public/uploads/cursus', cursus.img);
+        if (fs.existsSync(oldImgPath)) {
+          fs.unlinkSync(oldImgPath);
+        }
+      }
+      cursus.img = req.file.filename;
+    }
+
+    cursus.title = title;
+    cursus.description = description;
+    cursus.price = price;
+    cursus.theme = theme;
+    cursus.featured = featured;
+
+    await cursus.save();
+
+    req.session.message = "Cursus mis à jour avec succès !";
+    res.redirect('/admin/cursus');
+  } catch (err) {
+    console.error("Erreur updateCursus:", err);
+    req.session.message = "Erreur serveur lors de la mise à jour.";
+    res.redirect('/admin/cursus');
+  }
+};
+
+
+exports.deleteCursus = async (req, res) => {
+  try {
+    const cursus = await Cursus.findById(req.params.id);
+    if (!cursus) {
+      req.session.message = "Cursus introuvable.";
+      return res.redirect('/admin/cursus');
+    }
+
+    // Delete the image if it exists
+    if (cursus.img && cursus.img !== 'default.jpg') {
+      const imgPath = path.join(__dirname, '../public/uploads/cursus', cursus.img);
+      if (fs.existsSync(imgPath)) {
+        fs.unlinkSync(imgPath);
+      }
+    }
+
+    await cursus.deleteOne();
+
+    req.session.message = "Cursus supprimé avec succès.";
+    res.redirect('/admin/cursus');
+  } catch (err) {
+    console.error("Erreur deleteCursus:", err);
+    req.session.message = "Erreur lors de la suppression du cursus.";
+    res.redirect('/admin/cursus');
+  }
+};
 
 exports.getMyCursus = async (req, res) => {
   const userId = req.session.user._id;
@@ -69,25 +163,25 @@ exports.getMyCursus = async (req, res) => {
       id: cursus._id,
       title: cursus.title,
       progress: progressPercent,
-      certified: !!certif
+      certified: !!certif, 
+      img: cursus.img,
     });
   }
 
-  // 🧠 On récupère les ID des cursus achetés pour filtrer
-  const cursusAchetésIds = cursusAchetés.map(c => String(c._id));
+  const purchasedCursusIds = purchasedCursus.map(c => String(c._id));
 
-  // 🎯 Leçons achetées individuellement
-  const leçonsIndividuelles = purchases
-    .filter(p => p.lesson && (!p.lesson.cursus || !cursusAchetésIds.includes(String(p.lesson.cursus))))
+  const individualLessons = purchases
+    .filter(p => p.lesson && (!p.lesson.cursus || !purchasedCursusIds.includes(String(p.lesson.cursus))))
     .map(p => ({
       id: p.lesson._id,
       title: p.lesson.title,
       cursusTitle: p.lesson.cursus?.title || null
     }));
-
+  
   res.render("main/dashboard", {
     userCursus: data,
-    userLessons: leçonsIndividuelles
+    userLessons: individualLessons,
+    pageStylesheet: "main/dashboard"
   });
 };
 
@@ -128,7 +222,6 @@ exports.getCursusById = async (req, res) => {
 
       certif = await Certification.findOne({ user: userId, cursus: cursusId });
     } catch (sessionErr) {
-      // utilisateur non connecté
     }
 
     res.render("main/cursus-details", {
@@ -137,7 +230,8 @@ exports.getCursusById = async (req, res) => {
       hasCursus,
       purchasedLessonIds,
       completedLessonIds,
-      certif
+      certif,
+      pageStylesheet: "main/cursus-detail"
     });
 
   } catch (err) {
@@ -149,39 +243,3 @@ exports.getCursusById = async (req, res) => {
   }
 };
 
-// CREATE
-exports.createCursus = async (req, res) => {
-  try {
-    const { title, description, price, theme } = req.body;
-    const newCursus = await Cursus.create({ title, description, price, theme });
-    res.status(201).json(newCursus);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
-
-// UPDATE
-exports.updateCursus = async (req, res) => {
-  try {
-    const { title, description, price } = req.body;
-    const updated = await Cursus.findByIdAndUpdate(
-      req.params.id,
-      { title, description, price },
-      { new: true }
-    );
-    if (!updated) return res.status(404).json({ message: "Cursus not found" });
-    res.json(updated);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
-
-// DELETE
-exports.deleteCursus = async (req, res) => {
-  try {
-    await Cursus.findByIdAndDelete(req.params.id);
-    res.json({ message: "Cursus deleted" });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};

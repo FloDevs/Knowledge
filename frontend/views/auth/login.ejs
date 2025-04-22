@@ -1,17 +1,26 @@
 <%- include('../partials/header.ejs', { pageTitle: 'Connexion' }) %>
 
-<h2>Se connecter</h2>
-<form action="/auth/login" method="POST">
-  <%- include('../partials/csrf') %>
-  
-  <label for="email">Email :</label>
-  <input type="email" name="email" id="email" required>
+<div class="login-container">
+  <h1>Connexion</h1>
 
-  <label for="password">Mot de passe :</label>
-  <input type="password" name="password" id="password" required>
+  <form class="login-form" action="/auth/login" method="POST">
+    <%- include('../partials/csrf') %>
 
-  <button type="submit">Connexion</button>
-</form>
-<p>Pas de compte ? <a href="/auth/register">Inscrivez-vous</a></p>
+    <h2>Se connecter</h2>
+
+    <input type="email" name="email" id="email" placeholder="Email" required>
+    <input type="password" name="password" id="password" placeholder="Mot de passe" required>
+
+    <button type="submit">Connexion</button>
+  </form>
+
+  <p class="social-text">Rejoignez-nous si ce n’est pas déjà fait !</p>
+
+  <div class="social-icons">
+    <a href="#"><img src="/img/facebook.png" alt="Facebook"></a>
+    <a href="#"><img src="/img/twitter.png" alt="Twitter"></a>
+    <a href="#"><img src="/img/instagram.png" alt="Instagram"></a>
+  </div>
+</div>
 
 <%- include('../partials/footer.ejs') %>

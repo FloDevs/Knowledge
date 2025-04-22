@@ -13,7 +13,7 @@ module.exports = async (req, res, next) => {
       return next();
     }
   } catch (err) {
-    console.error("❌ Erreur récupération session Stripe :", err.message);
+    console.error("Erreur récupération session Stripe :", err.message);
   }
 
   return res.redirect("/login?message=Accès refusé");

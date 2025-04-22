@@ -1,7 +1,9 @@
 <%- include('../partials/header.ejs', { pageTitle: 'Connexion' }) %>
-  <div class="container">
-    <h1>Email confirmé ✅</h1>
-    <p><%= message %></p>
-    <a href="/auth/login">Se connecter</a>
-  </div>
-  <%- include('../partials/footer.ejs') %>
+
+<div class="confirmation-container">
+  <h1 class="confirmation-title">✅ Email confirmé</h1>
+  <p class="confirmation-message"><%= message %></p>
+  <a href="/auth/login" class="btn-go-login">Se connecter</a>
+</div>
+
+<%- include('../partials/footer.ejs') %>

@@ -1,0 +1,11 @@
+<%- include('partials/admin-header.ejs', { pageTitle: 'Erreur' }) %>
+
+<div class="error-container">
+  <h1>Oups… une erreur est survenue</h1>
+
+  <p><%= message || "Quelque chose s'est mal passé. Veuillez réessayer plus tard." %></p>
+
+  <a href="/" class="btn-home">🏠 Retour à l'accueil</a>
+</div>
+
+<%- include('partials/footer.ejs') %>
