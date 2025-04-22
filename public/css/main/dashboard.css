@@ -8,7 +8,7 @@
 .dashboard-container h1 {
   font-size: 2rem;
   margin-bottom: 2rem;
-  border-bottom: 2px solid #a30017;
+  border-bottom: 2px solid #cd2c2e;
   display: inline-block;
   padding-bottom: 0.3rem;
 }
@@ -16,7 +16,7 @@
 .dashboard-container h2 {
   font-size: 1.5rem;
   margin: 2rem 0 1rem;
-  border-bottom: 2px solid #005ca1;
+  border-bottom: 2px solid #00497c;
   display: inline-block;
   padding-bottom: 0.2rem;
 }
@@ -29,27 +29,22 @@
   margin-bottom: 2rem;
 }
 
-/* Reprise des styles existants (tu les as déjà bien faits) */
-
-/* Bouton profil */
 .dashboard-container .btn-primary {
   margin-top: 2rem;
 }
 
-
 .card-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 1.25rem; /* 20px */
-  margin-bottom: 2rem; /* 32px */
+  gap: 1.25rem;
+  margin-bottom: 2rem;
 }
 
-/* CURSUS CARD */
 .cursus-card {
-  background-color: #fff;
+  background-color: #f1f8fc;
   border: 1px solid #ddd;
   border-radius: 0.5rem;
-  width: 17.5rem; /* 280px */
+  width: 17.5rem;
   box-shadow: 0 0.125rem 0.375rem rgba(0, 0, 0, 0.05);
   overflow: hidden;
   transition: transform 0.2s ease;
@@ -58,17 +53,17 @@
 }
 
 .cursus-card:hover {
-  transform: translateY(-0.25rem); /* 4px */
+  transform: translateY(-0.25rem);
 }
 
 .cursus-card img {
   width: 100%;
-  height: 10rem; /* 160px */
+  height: 10rem;
   object-fit: cover;
 }
 
 .cursus-content {
-  padding: 1rem; /* 16px */
+  padding: 1rem;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -101,7 +96,7 @@
 }
 
 .progress {
-  background-color: #0073c6;
+  background-color: #0074c7;
   height: 100%;
   transition: width 0.3s ease-in-out;
 }
@@ -109,7 +104,7 @@
 .btn-primary {
   display: inline-block;
   margin-top: auto;
-  background-color: #0073c6;
+  background-color: #0074c7;
   color: white !important;
   padding: 0.5rem 0.75rem;
   text-align: center;
@@ -123,9 +118,8 @@
   background-color: #005ea0;
 }
 
-/* LESSON CARD */
 .lesson-card {
-  background-color: #fff;
+  background-color: #f1f8fc;
   border: 1px solid #ddd;
   border-radius: 0.5rem;
   width: 17.5rem;
@@ -151,12 +145,12 @@
 .lesson-content h3 {
   font-size: 1.1rem;
   margin-top: 0;
-  color: #0073c6;
+  color: #0074c7;
 }
 
 .lesson-content a {
   text-decoration: none;
-  color: #0073c6;
+  color: #0074c7;
 }
 
 .lesson-content a:hover {
@@ -166,5 +160,5 @@
 .lesson-content p {
   margin-top: 0.5rem;
   font-size: 0.95rem;
-  color: #333;
+  color: #384050;
 }

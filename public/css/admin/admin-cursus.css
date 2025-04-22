@@ -2,29 +2,32 @@
   width: 80%;
   margin: 0 auto;
 }
-.admin-cursus-container h1,h2,h3,h4 {
+.admin-cursus-container h1,
+h2,
+h3,
+h4 {
   text-align: center;
 }
 .admin-cursus-container h1 {
-  color: #005ca1;
+  color: #00497c;
   margin-bottom: 2rem;
 }
 
 .admin-cursus-container h2 {
-  color: #0073c6;
+  color: #0074c7;
   margin-top: 2rem;
   margin-bottom: 1rem;
 }
 
 .admin-cursus-container h4 {
-  color: #005ca1;
+  color: #00497c;
   margin-top: 2rem;
   margin-bottom: 1rem;
 }
 
 .admin-cursus-container section {
-  background-color: white;
-  border: 1px solid #ddd;
+  background-color: #f1f8fc;
+  border: 1px solid #f1f8fc;
   border-radius: 6px;
   padding: 2rem;
   margin-bottom: 2rem;
@@ -52,8 +55,8 @@
 
 .admin-cursus-container button {
   align-self: start;
-  background-color: #0073c6;
-  color: white;
+  background-color: #0074c7;
+  color: #f1f8fc;
   border: none;
   padding: 0.5rem 1rem;
   border-radius: 0.5rem;
@@ -62,7 +65,7 @@
 }
 
 .admin-cursus-container button:hover {
-  background-color: #005ea0;
+  background-color: #00497c;
 }
 
 .admin-cursus-container ul {
@@ -72,7 +75,7 @@
 }
 
 .admin-cursus-container ul li {
-  border-top: 1px solid #eee;
+  border-top: 1px solid #f1f8fc;
   padding-top: 1rem;
   margin-top: 1rem;
 }
@@ -88,7 +91,7 @@
 }
 
 .toggle-block {
-  border: 1px solid #ddd;
+  border: 1px solid #f1f8fc;
   border-radius: 6px;
   margin-bottom: 2rem;
   overflow: hidden;
@@ -98,7 +101,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #f0f0f0;
+  background: #f1f8fc;
   padding: 12px 16px;
   cursor: pointer;
 }

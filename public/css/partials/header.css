@@ -53,7 +53,7 @@
 .search-form {
   display: flex;
   align-items: center;
-  background-color: #005ca1;
+  background-color: #00497c;
   border-radius: 20px;
   padding: 5px 10px;
   margin-right: 20px;
@@ -89,9 +89,9 @@
   max-width: 50rem;
   margin: 1.5rem auto;
   padding: 1rem 1.5rem;
-  border: 1px solid #d1d5db; /* gris clair */
-  background-color: #f9fafb; /* fond doux */
-  color: #111827; /* texte foncé */
+  border: 1px solid #d1d5db;
+  background-color: #f1f8fc;
+  color: #111827;
   font-size: 1rem;
   border-radius: 0.5rem;
   text-align: center;

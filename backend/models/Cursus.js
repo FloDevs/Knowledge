@@ -6,7 +6,7 @@ const cursusSchema = new mongoose.Schema({
   price: { type: Number, required: true },
   theme: { type: mongoose.Schema.Types.ObjectId, ref: "Theme", required: true },
   featured: { type: Boolean, default: false },
-  img: String
+  img: String,
 });
 
 module.exports = mongoose.model("Cursus", cursusSchema);

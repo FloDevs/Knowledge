@@ -6,14 +6,14 @@
 
 .login-container h1 {
   font-size: 2rem;
-  border-bottom: 2px solid #a30017;
+  border-bottom: 2px solid #cd2c2e;
   display: inline-block;
   padding-bottom: 0.3rem;
   margin-bottom: 2rem;
 }
 
 .login-form {
-  border: 1px solid #3aa300;
+  border: 1px solid #82b864;
   padding: 2rem;
   border-radius: 0.4rem;
   background: #f9f9f9;
@@ -38,7 +38,7 @@
 .login-form button {
   margin-top: 1rem;
   padding: 0.8rem 1.6rem;
-  background-color: #a30017;
+  background-color: #cd2c2e;
   color: white;
   border: none;
   cursor: pointer;
@@ -53,7 +53,7 @@
 .social-text {
   margin-top: 3rem;
   font-size: 1rem;
-  border-bottom: 2px solid #a30017;
+  border-bottom: 2px solid #cd2c2e;
   display: inline-block;
   padding-bottom: 0.3rem;
 }
@@ -66,7 +66,7 @@
   width: 2.2rem;
   height: 2.2rem;
   margin: 0 0.6rem;
-  background-color: #f3f0f8;
+  background-color: #f1f8fc;
   padding: 0.4rem;
   border-radius: 0.4rem;
 }

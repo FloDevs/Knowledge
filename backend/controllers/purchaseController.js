@@ -5,7 +5,7 @@ const Lesson = require("../models/Lesson");
 
 exports.createPurchase = async (req, res) => {
   try {
-    const userId = req.session?.user?._id; 
+    const userId = req.session?.user?._id;
     const { cursusId, lessonId } = req.body;
 
     if (!cursusId && !lessonId) {
@@ -34,7 +34,7 @@ exports.getAllPurchases = async () => {
 
 exports.getUserPurchases = async (req, res) => {
   try {
-    const userId = req.session?.user?._id; 
+    const userId = req.session?.user?._id;
     const userPurchases = await Purchase.find({ user: userId })
       .populate("cursus")
       .populate("lesson");
@@ -115,7 +115,9 @@ exports.createStripeSession = async (req, res) => {
 
 exports.confirmPurchase = async (req, res) => {
   if (!req.session.user || !req.session.user._id) {
-    return res.status(401).render("error", { message: "Utilisateur non connecté." });
+    return res
+      .status(401)
+      .render("error", { message: "Utilisateur non connecté." });
   }
 
   const userId = req.session.user._id;
@@ -128,13 +130,20 @@ exports.confirmPurchase = async (req, res) => {
       const items = JSON.parse(session.metadata.cart || "[]");
 
       for (const item of items) {
-        const already = await Purchase.findOne({ user: userId, [item.type]: item.id });
+        const already = await Purchase.findOne({
+          user: userId,
+          [item.type]: item.id,
+        });
         if (!already) {
           await Purchase.create({ user: userId, [item.type]: item.id });
         }
       }
 
-      return res.render("purchase/purchase-success", { type: "panier", id: null, pageStylesheet:"purchase/purchase" });
+      return res.render("purchase/purchase-success", {
+        type: "panier",
+        id: null,
+        pageStylesheet: "purchase/purchase",
+      });
     }
 
     const already = await Purchase.findOne({ user: userId, [type]: id });
@@ -142,13 +151,17 @@ exports.confirmPurchase = async (req, res) => {
       await Purchase.create({ user: userId, [type]: id });
     }
 
-    res.render("purchase/purchase-success", { type, id, pageStylesheet:"purchase/purchase" });
+    res.render("purchase/purchase-success", {
+      type,
+      id,
+      pageStylesheet: "purchase/purchase",
+    });
   } catch (err) {
     console.error("❌ Erreur lors de l'enregistrement de l'achat :", err);
     res.status(500).render("purchase/purchase-cancel", {
       message: "Erreur lors de la validation de l'achat",
       error: err,
-      pageStylesheet:"purchase/purchase"
+      pageStylesheet: "purchase/purchase",
     });
   }
 };

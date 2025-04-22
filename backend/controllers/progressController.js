@@ -9,13 +9,16 @@ exports.markLessonCompleted = async (req, res) => {
     const { lessonId } = req.body;
 
     // Update or create progress
-    let progress = await LessonProgress.findOne({ user: userId, lesson: lessonId });
+    let progress = await LessonProgress.findOne({
+      user: userId,
+      lesson: lessonId,
+    });
     if (!progress) {
       progress = await LessonProgress.create({
         user: userId,
         lesson: lessonId,
         isCompleted: true,
-        completedAt: new Date()
+        completedAt: new Date(),
       });
     } else {
       progress.isCompleted = true;
@@ -25,25 +28,25 @@ exports.markLessonCompleted = async (req, res) => {
 
     const lesson = await Lesson.findById(lessonId);
     const allLessons = await Lesson.find({ cursus: lesson.cursus });
-    const allLessonIds = allLessons.map(l => l._id.toString());
+    const allLessonIds = allLessons.map((l) => l._id.toString());
 
     const completedLessons = await LessonProgress.find({
       user: userId,
       lesson: { $in: allLessonIds },
-      isCompleted: true
+      isCompleted: true,
     });
 
     // All lessons complete => Certification
     if (completedLessons.length === allLessons.length) {
       const existingCertif = await Certification.findOne({
         user: userId,
-        cursus: lesson.cursus
+        cursus: lesson.cursus,
       });
       if (!existingCertif) {
         await Certification.create({
           user: userId,
           cursus: lesson.cursus,
-          issuedAt: new Date()
+          issuedAt: new Date(),
         });
       }
     }
@@ -60,11 +63,11 @@ exports.getCursusProgress = async (req, res) => {
     const { cursusId } = req.params;
 
     const lessons = await Lesson.find({ cursus: cursusId });
-    const lessonIds = lessons.map(l => l._id);
-    
+    const lessonIds = lessons.map((l) => l._id);
+
     const progressData = await LessonProgress.find({
       user: userId,
-      lesson: { $in: lessonIds }
+      lesson: { $in: lessonIds },
     });
 
     res.json({ lessons, progressData });

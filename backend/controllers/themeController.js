@@ -10,17 +10,17 @@ exports.createTheme = async (req, res) => {
 
     if (!name || name.trim() === "") {
       req.session.message = "Le nom du thème est requis.";
-      return res.redirect('/admin/cursus');
+      return res.redirect("/admin/cursus");
     }
 
     await Theme.create({ name: name.trim() });
 
     req.session.message = "Thème créé avec succès !";
-    res.redirect('/admin/cursus');
+    res.redirect("/admin/cursus");
   } catch (err) {
     console.error("Erreur createTheme:", err);
     req.session.message = "Erreur lors de la création du thème.";
-    res.redirect('/admin/cursus');
+    res.redirect("/admin/cursus");
   }
 };
 

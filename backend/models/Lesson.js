@@ -7,7 +7,11 @@ const lessonSchema = new mongoose.Schema({
   documentUrl: String,
   textContent: String,
   price: { type: Number, required: true },
-  cursus: { type: mongoose.Schema.Types.ObjectId, ref: "Cursus", required: true },
+  cursus: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Cursus",
+    required: true,
+  },
 });
 
 module.exports = mongoose.model("Lesson", lessonSchema);
