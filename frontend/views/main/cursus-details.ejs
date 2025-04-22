@@ -1,25 +1,40 @@
 <%- include('../partials/header.ejs', { pageTitle: cursus.title }) %>
 
-<h2><%= cursus.title %></h2>
-<p><%= cursus.description %></p>
+<div class="cursus-detail-container">
+  <h2 class="cursus-title"><%= cursus.title %></h2>
+  <p class="cursus-description"><%= cursus.description %></p>
 
-<ul>
-  <% allLessons.forEach(lesson => { %>
-    <li>
-      <a href="/lessons/<%= lesson._id %>">
-        <%= lesson.title %>
-      </a>
-      <% if (completedLessonIds.includes(lesson._id.toString())) { %>
-        ✅
-      <% } %>
-    </li>
-  <% }) %>
-</ul>
+  <ul class="lesson-list">
+    <% allLessons.forEach(lesson => { 
+      const isUnlocked = hasCursus || purchasedLessonIds.includes(lesson._id.toString());
+      const isCompleted = completedLessonIds.includes(lesson._id.toString());
+    %>
+      <li class="lesson-item <%= isUnlocked ? 'unlocked' : 'locked' %>">
+        <div class="lesson-info">
+          <% if (isUnlocked) { %>
+            <a href="/lessons/<%= lesson._id %>" class="lesson-link"><%= lesson.title %></a>
+          <% } else { %>
+            <span class="lesson-title"><%= lesson.title %></span>
+            <form action="/cart/add/<%= lesson._id %>?type=lesson" method="POST" class="add-to-cart-form">
+              <%- include('../partials/csrf') %>
+              <button type="submit" class="btn-add-cart">🛒</button>
+            </form>
+          <% } %>
 
-<% if (certif) { %>
-  <hr>
-  <h3>🎉 Félicitations ! Vous avez terminé toutes les leçons.</h3>
-  <a href="/certifications/download/<%= cursus._id %>" class="btn btn-success">📄 Télécharger mon certificat</a>
-<% } %>
+          <% if (isCompleted) { %>
+            <span class="lesson-status">✅</span>
+          <% } %>
+        </div>
+      </li>
+    <% }) %>
+  </ul>
+
+  <% if (certif) { %>
+    <div class="certif-section">
+      <h3>🎉 Félicitations ! Vous avez terminé toutes les leçons.</h3>
+      <a href="/certifications/download/<%= cursus._id %>" class="btn-certif">📄 Télécharger mon certificat</a>
+    </div>
+  <% } %>
+</div>
 
 <%- include('../partials/footer.ejs') %>

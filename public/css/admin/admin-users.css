@@ -1,0 +1,73 @@
+.admin-users-container {
+  max-width: 60rem;
+  margin: 3rem auto;
+  padding: 2rem;
+}
+
+.admin-users-container h1 {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid #a30017;
+  padding-bottom: 0.3rem;
+  display: inline-block;
+}
+
+.user-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1rem;
+  margin-top: 2rem;
+}
+
+.user-table th,
+.user-table td {
+  border: 1px solid #ccc;
+  padding: 1rem;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.user-table input[type="text"],
+.user-table input[type="email"] {
+  width: 100%;
+  padding: 0.6rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 0.4rem;
+  box-sizing: border-box;
+}
+
+.actions-cell {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-edit,
+.btn-delete {
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  border-radius: 0.3rem;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-edit {
+  background-color: #007bff;
+  color: white;
+}
+
+.btn-edit:hover {
+  background-color: #0056b3;
+}
+
+.btn-delete {
+  background-color: #dc3545;
+  color: white;
+}
+
+.btn-delete:hover {
+  background-color: #a30017;
+}

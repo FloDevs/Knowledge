@@ -3,7 +3,6 @@ const Certification = require('../models/Certification');
 const User = require('../models/User');
 const Cursus = require('../models/Cursus')
 
-// GET ALL CERTIFICATIONS (Admin)
 exports.getAllCertifications = async (req, res) => {
   try {
     const certifs = await Certification.find({})
@@ -15,22 +14,26 @@ exports.getAllCertifications = async (req, res) => {
   }
 };
 
-// GET USER CERTIFICATIONS
-exports.getUserCertifications = async (req, res) => {
+
+exports.getUserCertificationsView = async (req, res) => {
   try {
-    const { userId } = req; // from auth
-    const userCertifs = await Certification.find({ user: userId })
+    const userId = req.session.user._id;
+
+    const certifications = await Certification.find({ user: userId })
       .populate("cursus");
-    res.json(userCertifs);
+
+    res.render("main/certification", { certifications, pageStylesheet: "main/certification"});
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).render("error", {
+      message: "Erreur lors du chargement des certificats",
+      error: err
+    });
   }
 };
 
-
 exports.downloadCertificate = async (req, res) => {
   try {
-    const { userId } = req; 
+    const userId = req.session?.user?._id;
     const { cursusId } = req.params;
 
     const certif = await Certification.findOne({ user: userId, cursus: cursusId }).populate('cursus');
@@ -48,7 +51,7 @@ exports.downloadCertificate = async (req, res) => {
 
     doc
       .fontSize(20)
-      .text('🎓 Certificat de Réussite', { align: 'center' })
+      .text('Certificat de Réussite', { align: 'center' })
       .moveDown(2);
 
     doc
@@ -82,18 +85,3 @@ exports.downloadCertificate = async (req, res) => {
   }
 };
 
-exports.getUserCertificationsView = async (req, res) => {
-  try {
-    const userId = req.session.user._id;
-
-    const certifications = await Certification.find({ user: userId })
-      .populate("cursus");
-
-    res.render("main/mes-certificats", { certifications });
-  } catch (err) {
-    res.status(500).render("error", {
-      message: "Erreur lors du chargement des certificats",
-      error: err
-    });
-  }
-};

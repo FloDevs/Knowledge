@@ -4,6 +4,8 @@ const cors = require('cors');
 const session = require("express-session");
 const helmet = require("helmet");
 const methodOverride = require('method-override');
+const flashMessage = require('./middlewares/flashMessage');
+
 require('dotenv').config();
 
 const Cursus = require("./models/Cursus");
@@ -16,7 +18,7 @@ const purchaseRoutes = require("./routes/purchaseRoutes");
 const progressRoutes = require("./routes/progressRoutes");
 const certificationRoutes = require("./routes/certificationRoutes");
 const adminRoutes = require('./routes/adminRoutes');
-
+const cartRoutes = require("./routes/cartRoutes");
 
 const {
   logger,
@@ -27,65 +29,84 @@ const {
 
 const app = express();
 
-app.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'"],
-      scriptSrc: ["'self'"],
-      formAction: ["'self'", "https://checkout.stripe.com"],
+// Security headers
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: [
+          "'self'",
+          "https://www.youtube.com",
+          "https://www.youtube-nocookie.com",
+          "https://s.ytimg.com"
+        ],
+        frameSrc: [
+          "'self'",
+          "https://www.youtube.com",
+          "https://www.youtube-nocookie.com",
+          "https://drive.google.com"
+        ],
+        mediaSrc: [
+          "'self'",
+          "https://www.youtube.com",
+          "https://www.youtube-nocookie.com"
+        ],
+        imgSrc: [
+          "'self'",
+          "data:",
+          "https://i.ytimg.com",
+          "https://lh3.googleusercontent.com"
+        ],
+        formAction: ["'self'", "https://checkout.stripe.com"]
+      }
     }
-  }
-}));
+  })
+);
 
 
-app.set("trust proxy", false);
+
+if (process.env.NODE_ENV === "production") {
+  app.set("trust proxy", 1); // required for the secure cookie to work properly behind a proxy
+}
+
 app.use(
   session({
     secret: process.env.SESSION_SECRET || "fallbackSecret",
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: false,           // tu es en HTTP → doit rester false
+      secure: process.env.NODE_ENV === "production",
       httpOnly: true,
-      sameSite: "lax",         // ← essentiel pour autoriser la redirection Stripe
-      maxAge: 1000 * 60 * 60,  // 1h
+      sameSite: "lax",
+      maxAge: 1000 * 60 * 60,
     }
   })
 );
 
-// ✅ parser AVANT le csrfProtection
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(methodOverride('_method'));
-
-app.use((req, res, next) => {
-  res.locals.message = req.session.message || null;
-  delete req.session.message; 
-  next();
-});
-
-// CSRF protection maintenant que session + body sont en place
 app.use(csrfProtection);
 
-// Injecte automatiquement le token dans toutes les vues
+// Token CSRF for all views
 app.use((req, res, next) => {
-  res.locals.csrfToken = req.csrfToken();
+  if (typeof req.csrfToken === 'function') {
+    res.locals.csrfToken = req.csrfToken();
+  }
   next();
 });
 
-// Autres middlewares
+app.use(flashMessage);
 app.use(logger);
 app.use(setUserLocals);
 app.use(cors());
 app.use(sanitizeInputs);
 
-// Vues
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "../frontend/views"));
 app.use(express.static(path.join(__dirname, '../public')));
 
-
-// Routes
 app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
 app.use("/themes", themeRoutes);
@@ -94,16 +115,22 @@ app.use("/lessons", lessonRoutes);
 app.use("/purchases", purchaseRoutes);
 app.use("/progress", progressRoutes);
 app.use("/certifications", certificationRoutes);
-app.use('/admin', adminRoutes);
+app.use("/admin", adminRoutes);
+app.use("/cart", cartRoutes);
 
-// Accueil
 app.get("/", async (req, res) => {
   const message = req.session.message;
   req.session.message = null;
 
   const featuredCursus = await Cursus.find({ featured: true }).limit(3);
 
-  res.render("index", { message, featuredCursus });
+  res.render("index", { message, featuredCursus, pageStylesheet: "index" });
+});
+
+app.use((req, res) => {
+  res.status(404).render("404", {
+    pageStylesheet: "404"
+  });
 });
 
 module.exports = app;

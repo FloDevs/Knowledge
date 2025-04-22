@@ -1,7 +1,9 @@
 <%- include('../partials/header.ejs', { pageTitle: 'Merci' }) %>
 
-<h2>✅ Achat confirmé</h2>
-<p>Merci pour votre achat ! Vous pouvez maintenant accéder à votre contenu.</p>
-<a href="/cursus/dashboard">Voir mes cursus</a>
+<div class="confirmation-container">
+  <h2 class="success-title">✅ Achat confirmé</h2>
+  <p class="success-text">Merci pour votre achat ! Vous pouvez maintenant accéder à votre contenu.</p>
+  <a href="/cursus/dashboard" class="btn-success">Voir mes cursus</a>
+</div>
 
 <%- include('../partials/footer') %>

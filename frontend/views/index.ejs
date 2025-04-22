@@ -1,23 +1,36 @@
 <%- include('partials/header.ejs', { pageTitle: 'Accueil' }) %>
 
-<h1>Bienvenue sur la plateforme E-Learning</h1>
-<p>
-  Découvrez nos cursus et leçons pour apprendre rapidement et efficacement.
-</p>
-<a href="/cursus">Voir tous nos cursus</a>
-<a href="/lessons">Voir toutes nos leçons</a>
+<div class="home-container">
 
-<% if (featuredCursus && featuredCursus.length > 0) { %>
-  <h2>🔥 Cursus en Tête d’Affiche</h2>
-  <ul>
-    <% featuredCursus.forEach(cursus => { %>
-      <li>
-        <strong><%= cursus.title %></strong><br>
-        <%= cursus.description %><br>
-        <a href="/cursus/<%= cursus._id %>">Voir les leçons</a>
-      </li>
-    <% }) %>
-  </ul>
-<% } %>
+  <h1 class="main-title">Bienvenue sur la plateforme E-Learning <span>Knowledge</span> !</h1>
+  <h2 class="sub-title">Soif de savoir ?</h2>
+
+  <p class="home-intro">
+    Bienvenue sur Knowlmedge, la plateforme d’apprentissage pensée pour les esprits curieux et ambitieux. Que vous souhaitiez développer de nouvelles compétences, vous reconvertir, ou simplement nourrir votre soif de connaissances,
+     nous avons conçu des cursus et des leçons accessibles, pratiques et motivantes. Apprenez à votre rythme, progressez selon vos envies, et ouvrez la porte à de nouvelles opportunités.
+  </p>
+
+  <div class="cta-wrapper">
+    <a href="/auth/register" class="cta-button">Inscrivez-vous !</a>
+  </div>
+
+  <% if (featuredCursus && featuredCursus.length > 0) { %>
+    <h2 class="section-title">À la une en ce moment</h2>
+    <div class="cursus-grid">
+      <% featuredCursus.forEach(cursus => { %>
+        <div class="cursus-card">
+          <div class="card-image">
+            <img src="/uploads/cursus/<%= cursus.img %>" />
+          </div>
+          <div class="card-body">
+            <h3><%= cursus.title %></h3>
+            <p><%= cursus.description %></p>
+            <a href="/cursus/<%= cursus._id %>" class="btn">Voir les leçons</a>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  <% } %>
+</div>
 
 <%- include('partials/footer.ejs') %>

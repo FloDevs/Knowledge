@@ -1,28 +1,44 @@
 <%- include('../partials/header.ejs', { pageTitle: 'Nos Cursus' }) %>
 
-<h2>🛍 Tous les cursus</h2>
+<div class="cursus-page">
+  <h2 class="page-title">Les Formations</h2>
 
-<input type="text" id="searchCursus" placeholder="Rechercher une formation..." class="search-bar">
-<button id="searchCursusBtn">Rechercher</button>
+  <% if (searchQuery) { %>
+    <p class="search-result">🔎 Résultat pour : "<strong><%= searchQuery %></strong>"</p>
+  <% } %>
 
-<ul id="cursusList">
-  <% cursusList.forEach(cursus => {
-    const isAcheté = cursusAchetésIds.includes(cursus._id.toString());
-  %>
-    <li>
-      <%= cursus.title %>
-      <% if (isAcheté) { %>
-        ✅ Acheté
-      <% } else { %>
-        <form action="/purchases/buy/cursus/<%= cursus._id %>" method="GET">
-          <button type="submit">Acheter</button>
-        </form>
-      <% } %>
-      <a href="/cursus/<%= cursus._id %>">Voir les leçons</a>
-    </li>
-  <% }) %>
-</ul>
+  <% if (cursusList.length > 0) { %>
+    <div class="cursus-grid">
+      <% cursusList.forEach(cursus => {
+        const isAcheté = cursusAchetésIds.includes(cursus._id.toString());
+      %>
+        <div class="cursus-card">
+          <div class="card-image">
+            <img src="/uploads/cursus/<%= cursus.img %>" />
+          </div>
+          <div class="card-body">
+            <h3><%= cursus.title %></h3>
+            <p><%= cursus.description %></p>
 
+            <div class="card-actions">
+              <a href="/cursus/<%= cursus._id %>" class="btn">En savoir plus</a>
 
+              <% if (isAcheté) { %>
+                <span class="bought">✅</span>
+              <% } else { %>
+                <form action="/cart/add/<%= cursus._id %>?type=cursus" method="POST">
+                  <%- include('../partials/csrf') %>
+                  <button type="submit" class="add-cart">🛒</button>
+                </form>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  <% } else { %>
+    <p class="no-result">Aucun cursus ne correspond à votre recherche.</p>
+  <% } %>
+</div>
 
 <%- include('../partials/footer.ejs') %>

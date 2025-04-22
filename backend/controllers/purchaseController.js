@@ -3,13 +3,11 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const Cursus = require("../models/Cursus");
 const Lesson = require("../models/Lesson");
 
-// CREATE PURCHASE
 exports.createPurchase = async (req, res) => {
   try {
-    const { userId } = req; // supposons que le middleware auth place req.userId
+    const userId = req.session?.user?._id; 
     const { cursusId, lessonId } = req.body;
 
-    // Vérification : cursusId OU lessonId doit être défini
     if (!cursusId && !lessonId) {
       return res.status(400).json({ message: "Cursus or Lesson required" });
     }
@@ -26,23 +24,17 @@ exports.createPurchase = async (req, res) => {
   }
 };
 
-// GET ALL PURCHASES (Admin)
-exports.getAllPurchases = async (req, res) => {
-  try {
-    const purchases = await Purchase.find({})
-      .populate("user")
-      .populate("cursus")
-      .populate("lesson");
-      res.render("admin/orders", { orders : purchases});
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+exports.getAllPurchases = async () => {
+  const purchases = await Purchase.find({})
+    .populate("user")
+    .populate("cursus")
+    .populate("lesson");
+  return purchases;
 };
 
-// GET PURCHASES BY USER
 exports.getUserPurchases = async (req, res) => {
   try {
-    const { userId } = req; // from auth
+    const userId = req.session?.user?._id; 
     const userPurchases = await Purchase.find({ user: userId })
       .populate("cursus")
       .populate("lesson");
@@ -51,9 +43,6 @@ exports.getUserPurchases = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
-
-
-
 
 exports.createStripeSession = async (req, res) => {
   const { type, id } = req.params;
@@ -124,36 +113,42 @@ exports.createStripeSession = async (req, res) => {
   }
 };
 
-
-
 exports.confirmPurchase = async (req, res) => {
-  // On vérifie que l'utilisateur est connecté
   if (!req.session.user || !req.session.user._id) {
-    return res.status(401).render("error", {
-      message: "Utilisateur non connecté.",
-    });
+    return res.status(401).render("error", { message: "Utilisateur non connecté." });
   }
 
-  // Récupère l'id user, plus les infos du query
   const userId = req.session.user._id;
-  const { type, id } = req.query;
+  const { type, id, from, session_id } = req.query;
 
   try {
-    // Vérifie si on a déjà un achat pour ce user et ce cursus/leçon
-    const already = await Purchase.findOne({ user: userId, [type]: id });
+    if (from === "cart" && session_id) {
+      // Retrieve the Stripe metadata (containing the full list)
+      const session = await stripe.checkout.sessions.retrieve(session_id);
+      const items = JSON.parse(session.metadata.cart || "[]");
 
+      for (const item of items) {
+        const already = await Purchase.findOne({ user: userId, [item.type]: item.id });
+        if (!already) {
+          await Purchase.create({ user: userId, [item.type]: item.id });
+        }
+      }
+
+      return res.render("purchase/purchase-success", { type: "panier", id: null, pageStylesheet:"purchase/purchase" });
+    }
+
+    const already = await Purchase.findOne({ user: userId, [type]: id });
     if (!already) {
-      // Crée l'achat si inexistant
       await Purchase.create({ user: userId, [type]: id });
     }
 
-    // Rend la page de confirmation
-    res.render("purchase/purchase-success", { type, id });
+    res.render("purchase/purchase-success", { type, id, pageStylesheet:"purchase/purchase" });
   } catch (err) {
     console.error("❌ Erreur lors de l'enregistrement de l'achat :", err);
     res.status(500).render("purchase/purchase-cancel", {
       message: "Erreur lors de la validation de l'achat",
       error: err,
+      pageStylesheet:"purchase/purchase"
     });
   }
 };

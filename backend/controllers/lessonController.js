@@ -2,16 +2,15 @@ const Lesson = require("../models/Lesson");
 const Purchase = require("../models/Purchase");
 const LessonProgress = require("../models/LessonProgress");
 
-
 exports.getAllLessons = async () => {
   return await Lesson.find().lean();
 };
 
-// CREATE
 exports.createLesson = async (req, res) => {
   try {
     const { title, description, videoUrl, documentUrl, price, cursus } = req.body;
-    const newLesson = await Lesson.create({
+
+    await Lesson.create({
       title,
       description,
       videoUrl,
@@ -19,49 +18,53 @@ exports.createLesson = async (req, res) => {
       price,
       cursus,
     });
-    res.status(201).json(newLesson);
+
+    req.session.message = "Leçon créée avec succès !";
+    res.redirect('/admin/cursus');
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error("Erreur createLesson:", err);
+    req.session.message = "Erreur lors de la création de la leçon.";
+    res.redirect('/admin/cursus');
   }
 };
 
-
-// GET BY ID
-exports.getLessonById = async (req, res) => {
-  try {
-    const lesson = await Lesson.findById(req.params.id).populate("cursus");
-    if (!lesson) return res.status(404).json({ message: "Lesson not found" });
-    res.json(lesson);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
-
-// UPDATE
 exports.updateLesson = async (req, res) => {
   try {
     const { title, description, videoUrl, documentUrl, price } = req.body;
+
     const updated = await Lesson.findByIdAndUpdate(
       req.params.id,
       { title, description, videoUrl, documentUrl, price },
       { new: true }
     );
-    if (!updated) return res.status(404).json({ message: "Lesson not found" });
-    res.json(updated);
+
+    if (!updated) {
+      req.session.message = "Leçon introuvable.";
+    } else {
+      req.session.message = "Leçon mise à jour avec succès !";
+    }
+
+    res.redirect('/admin/cursus');
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error("Erreur updateLesson:", err);
+    req.session.message = "Erreur serveur lors de la mise à jour.";
+    res.redirect('/admin/cursus');
   }
 };
 
-// DELETE
 exports.deleteLesson = async (req, res) => {
   try {
     await Lesson.findByIdAndDelete(req.params.id);
-    res.json({ message: "Lesson deleted" });
+
+    req.session.message = "Leçon supprimée avec succès.";
+    res.redirect('/admin/cursus');
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error("Erreur deleteLesson:", err);
+    req.session.message = "Erreur lors de la suppression de la leçon.";
+    res.redirect('/admin/cursus');
   }
 };
+
 
 exports.getLessonViewById = async (req, res) => {
   try {
@@ -75,7 +78,7 @@ exports.getLessonViewById = async (req, res) => {
 
     const cursusId = lesson.cursus?._id;
 
-    // Vérifie que l'utilisateur a acheté le cursus ou la leçon
+    // Check that the user has purchased the cursus or the lesson
     const hasAccess = await Purchase.findOne({
       user: userId,
       $or: [
@@ -90,7 +93,7 @@ exports.getLessonViewById = async (req, res) => {
       });
     }
 
-    // Progression
+    // Progress
     const progress = await LessonProgress.findOne({
       user: userId,
       lesson: id
@@ -101,7 +104,9 @@ exports.getLessonViewById = async (req, res) => {
     res.render("main/lesson", {
       lesson,
       cursus: lesson.cursus,
-      isCompleted
+      isCompleted,
+      pageStylesheet: "main/lesson"
+      
     });
   } catch (err) {
     console.error("Erreur vue leçon :", err);

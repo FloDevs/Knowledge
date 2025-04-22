@@ -1,0 +1,52 @@
+.confirmation-container {
+    max-width: 50rem;
+    margin: 5rem auto;
+    padding: 2rem;
+    text-align: center;
+  }
+  
+  .success-title {
+    font-size: 2rem;
+    color: #28a745;
+    margin-bottom: 1rem;
+  }
+  
+  .error-title {
+    font-size: 2rem;
+    color: #dc3545;
+    margin-bottom: 1rem;
+  }
+  
+  .success-text,
+  .error-text {
+    font-size: 1.1rem;
+    color: #333;
+    margin-bottom: 2rem;
+  }
+  
+  .btn-success,
+  .btn-back {
+    display: inline-block;
+    padding: 0.6rem 1.2rem;
+    font-size: 1rem;
+    border-radius: 0.3rem;
+    text-decoration: none;
+    color: white;
+  }
+  
+  .btn-success {
+    background-color: #28a745;
+  }
+  
+  .btn-success:hover {
+    background-color: #218838;
+  }
+  
+  .btn-back {
+    background-color: #6c757d;
+  }
+  
+  .btn-back:hover {
+    background-color: #5a6268;
+  }
+  

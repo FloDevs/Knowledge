@@ -1,0 +1,49 @@
+<%- include('../partials/header.ejs', { pageTitle: "Panier" }) %>
+
+<div class="cart-container">
+  <h1 class="cart-title"> Mon Panier</h1>
+
+  <% if (cursusList.length === 0 && lessonList.length === 0) { %>
+    <p class="empty-cart">Votre panier est vide.</p>
+  <% } else { %>
+
+    <% if (cursusList.length > 0) { %>
+      <h3 class="cart-section-title">Cursus :</h3>
+      <ul class="cart-list">
+        <% cursusList.forEach(c => { %>
+          <li class="cart-item">
+            <span><%= c.title %> – <%= c.price %> €</span>
+            <form action="/cart/remove/<%= c._id %>?type=cursus" method="POST">
+              <%- include('../partials/csrf') %>
+              <button class="btn-remove">❌</button>
+            </form>
+          </li>
+        <% }) %>
+      </ul>
+    <% } %>
+
+    <% if (lessonList.length > 0) { %>
+      <h3 class="cart-section-title">Leçons :</h3>
+      <ul class="cart-list">
+        <% lessonList.forEach(l => { %>
+          <li class="cart-item">
+            <span><%= l.title %> – <%= l.price %> €</span>
+            <form action="/cart/remove/<%= l._id %>?type=lesson" method="POST">
+              <%- include('../partials/csrf') %>
+              <button class="btn-remove">❌</button>
+            </form>
+          </li>
+        <% }) %>
+      </ul>
+    <% } %>
+
+    <form action="/cart/checkout" method="POST" class="checkout-form">
+      <%- include('../partials/csrf') %>
+      <button class="btn-checkout">💳 Payer tous les articles</button>
+    </form>
+
+    <a href="/cursus" class="btn-back-shop">← Continuer mes achats</a>
+  <% } %>
+</div>
+
+<%- include('../partials/footer.ejs') %>

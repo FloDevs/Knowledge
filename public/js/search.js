@@ -1,48 +1,32 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // Cursus
-    const searchCursus = document.getElementById('searchCursus');
-    const searchCursusBtn = document.getElementById('searchCursusBtn');
-    const cursusList = document.querySelectorAll('#cursusList li');
-  
-    if (searchCursus && searchCursusBtn && cursusList.length) {
-      function filterCursus() {
-        const term = searchCursus.value.toLowerCase();
-        cursusList.forEach((item) => {
-          const text = item.textContent.toLowerCase();
-          item.style.display = text.includes(term) ? '' : 'none';
-        });
+  const searchInput = document.getElementById('searchCursus');
+  const searchBtn = document.getElementById('searchCursusBtn');
+  const cursusList = document.querySelectorAll('#cursusList li');
+  const isOnCursusPage = window.location.pathname === "/cursus";
+
+  function filterCursus() {
+    const term = searchInput.value.toLowerCase();
+    cursusList.forEach((item) => {
+      const text = item.textContent.toLowerCase();
+      item.style.display = text.includes(term) ? '' : 'none';
+    });
+  }
+
+  if (searchInput && searchBtn) {
+    searchBtn.addEventListener('click', function (e) {
+      if (isOnCursusPage && cursusList.length) {
+        e.preventDefault();
+        filterCursus();
       }
-  
-      searchCursusBtn.addEventListener('click', filterCursus);
-      searchCursus.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
+    });
+
+    searchInput.addEventListener('keypress', function (e) {
+      if (e.key === 'Enter') {
+        if (isOnCursusPage && cursusList.length) {
           e.preventDefault();
           filterCursus();
         }
-      });
-    }
-  
-    // Leçons
-    const searchLesson = document.getElementById('searchLesson');
-    const searchLessonBtn = document.getElementById('searchLessonBtn');
-    const lessonList = document.querySelectorAll('#lessonList li');
-  
-    if (searchLesson && searchLessonBtn && lessonList.length) {
-      function filterLessons() {
-        const term = searchLesson.value.toLowerCase();
-        lessonList.forEach((item) => {
-          const text = item.textContent.toLowerCase();
-          item.style.display = text.includes(term) ? '' : 'none';
-        });
       }
-  
-      searchLessonBtn.addEventListener('click', filterLessons);
-      searchLesson.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-          e.preventDefault();
-          filterLessons();
-        }
-      });
-    }
-  });
-  
+    });
+  }
+});

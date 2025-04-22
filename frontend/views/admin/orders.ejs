@@ -1,5 +1,7 @@
 <%- include('../partials/admin-header.ejs', { pageTitle: 'Gérer les Commandes' }) %>
-<h1>💳 Commandes / Achats</h1>
+
+<div class="admin-orders-container">
+<h1>Commandes / Achats</h1>
 
 <ul>
   <% orders.forEach(order => { %>
@@ -17,5 +19,5 @@
     </li>
   <% }) %>
 </ul>
-
+</div>
 <%- include('../partials/footer.ejs') %>
